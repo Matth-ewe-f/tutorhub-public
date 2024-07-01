@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.529.1",
+    "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-slot": "^1.0.2",
+    "aws-sdk": "^2.1574.0",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.4.5",
+    "faker": "^6.6.6",
+    "mongoose": "^8.2.0",
+    "node": "^21.7.1",
+    "nodemon": "^3.1.0",
+    "react": "^18.2.0",
+    "react-hook-form": "^7.50.1",
+    "tailwind": "^4.0.0",
+    "zod": "^3.22.4"
+  },
+  "scripts": {
+    "start": "npm install && cd server && npm install && cd ../client && npm install && cd .. && npm run start:all",
+    "test": "cd server && npm test",
+    "start:api": "cd server && nodemon server.ts",
+    "start:app": "cd client && npm run dev",
+    "start:all": "concurrently \"npm run start:api\" \"npm run start:app\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.20",
+    "ts-node": "^10.9.2"
+  }
+}
