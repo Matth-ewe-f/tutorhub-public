@@ -1,73 +1,13 @@
 "use client";
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import "@/styles/global.css";
 import axios from "axios";
 import Navbar from "@/components/Navbar"
-import Link from 'next/link';
 import Loader from "@/components/Loader";
 import PostCard from "@/components/PostCard";
-import RatingStars from "@/components/RatingStars";
-import ReviewCard from "@/components/ReviewCard";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
-interface Profile {
-  affiliation: string;
-  department: string;
-  description: string;
-  email: string;
-  firstName: string;
-  graduationYear: string;
-  lastName: string;
-  posts: string[];
-  availability: number[];
-}
-
-interface ActivityPost {
-  _id: string;
-  userId: string;
-  userFirstName: string;
-  userLastName: string;
-  activityTitle: string;
-  activityDescription: string;
-  reviews: Review[],
-  imageUrl: string;
-  price: number;
-  tags: string[];
-  __v: number;
-}
-
-interface CoursePost {
-  _id: string;
-  userId: string;
-  userFirstName: string;
-  userLastName: string;
-  courseName: string;
-  description: string;
-  price: number;
-  reviews: Review[],
-  courseNumber: string;
-  courseDepartment: string[];
-  gradeReceived: string;
-  semesterTaken: string;
-  professorTakenWith: string;
-  takenAtHopkins: boolean;
-  schoolTakenAt: string;
-  __v: number;
-}
-
-type Post = ActivityPost | CoursePost;
-
-type Review = {
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  reviewDescription: string,
-  rating: number,
-}
 
 const Page : FC = ({ params }: { params : { id: string }}) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;

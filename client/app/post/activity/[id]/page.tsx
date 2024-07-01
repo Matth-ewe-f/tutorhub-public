@@ -23,16 +23,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button";
 import PostAnalytics  from "@/components/PostAnalytics";
 import { useRouter } from "next/navigation";
-import { set } from "cypress/types/lodash";
-
-type activityPostType = {
-  _id? : string,
-  userId? : string,
-  activityTitle? : string,
-  activityDescription? : string,
-  price? : number,
-  tags? : string[],
-}
 
 type userType = {
   firstName? : string,
@@ -40,25 +30,12 @@ type userType = {
   description? : string,
 }
 
-type review = {
-  _id: string,
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  isAnonymous?: boolean,
-  reviewDescription: string,
-  rating: number,
-}
-
 const Page : FC = ({ params }: { params : { id: string, type: string }}) => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
   const postId = params.id;
   const postType = "activityPosts"
 
-  const [post, setPost] = useState<activityPostType>({});
+  const [post, setPost] = useState<ActivityPost>();
   const [poster, setPoster] = useState<userType>({});
   // const [imgUrl, setImgUrl] = useState("/jhulogo.jpeg");
   const [loadedPost, setLoadedPost] = useState(false);
@@ -72,7 +49,7 @@ const Page : FC = ({ params }: { params : { id: string, type: string }}) => {
   const { isLoaded, isSignedIn, user } = useUser();
   const router = useRouter();
 
-  const [reviews, setReviews] = useState<review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
@@ -215,7 +192,7 @@ const Page : FC = ({ params }: { params : { id: string, type: string }}) => {
     setLoadedPost(true);
   }
 
-  const sortReviews = (unsorted : review[]) => {
+  const sortReviews = (unsorted : Review[]) => {
     let newReviews = unsorted.slice();
     if (reviewSort === "Lowest Rating") {
       newReviews.sort((a, b) => a.rating - b.rating);

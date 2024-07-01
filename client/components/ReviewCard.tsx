@@ -3,19 +3,6 @@ import React, { FC, HTMLAttributes, useEffect, useRef, useState } from 'react';
 import RatingStars from './RatingStars';
 import axios from 'axios';
 
-type Review = {
-  _id: string,
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  isAnonymous?: boolean,
-  reviewDescription: string,
-  rating: number,
-}
-
 type Props = {
   review: Review,
   loggedInUserId?: string,

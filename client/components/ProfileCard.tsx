@@ -1,21 +1,8 @@
 "use client";
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { FC, useEffect, useState } from 'react';
 
-type profileType = {
-	_id : string,
-	firstName : string,
-	lastName : string,
-	email : string,
-	affiliation : string,
-	department : string,
-	graduationYear? : string,
-	description? : string,
-  profilePicKey? : string
-}
-
-const PostCard: FC<{profile: profileType}> = ({ profile }) => {
+const PostCard: FC<{profile: Profile}> = ({ profile }) => {
   const [img, setImg] = useState("/defaultimg.jpeg");
   const [titleUnderline, setTitleUnderline] = useState(false);
   const fullName = `${profile.firstName} ${profile.lastName}`;
@@ -28,9 +15,6 @@ const PostCard: FC<{profile: profileType}> = ({ profile }) => {
       const key = profile.profilePicKey;
       const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`
       setImg(url);
-      // const api = process.env.NEXT_PUBLIC_BACKEND_URL;
-      // const url = await axios.get(`${api}/profilePics/get/${profile.profilePicKey}`);
-      // setImg(url.data.imageUrl);
     }
   }
 

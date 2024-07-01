@@ -17,63 +17,6 @@ import Loader from "@/components/Loader";
 import { Checkbox } from "@/components/ui/checkbox"
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { use } from "chai";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-  
-interface ActivityPost {
-    _id: string;
-    userId: string;
-    activityTitle: string;
-    activityDescription: string;
-    activityPostPicKey: string;
-    userFirstName: string;
-    userLastName: string;
-    price: number;
-    tags: string[];
-    reviews: review[];
-    __v: number;
-}
-
-interface CoursePost {
-    _id: string;
-    userId: string;
-    userFirstName: string;
-    userLastName: string;
-    courseName: string;
-    description: string;
-    coursePostPicKey: string;
-    price: number;
-    courseNumber: string;
-    courseDepartment: string[];
-    gradeReceived: string;
-    semesterTaken: string;
-    professorTakenWith: string;
-    takenAtHopkins: boolean;
-    schoolTakenAt: string;
-    reviews: review[];
-    __v: number;
-}
-
-type review = {
-    postId: string,
-    postName?: string,
-    postType?: string,
-    posterId: string,
-    reviewerId: string,
-    title?: string,
-    isAnonymous?: boolean,
-    reviewDescription: string,
-    rating: number,
-  }
-
-type Post = ActivityPost | CoursePost;
 
 const Page : FC = () => {
     // Data from Backend

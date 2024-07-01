@@ -21,20 +21,17 @@ import { useUser } from "@clerk/clerk-react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-//const { isLoaded, isSignedIn, user } = useUser();
-
-
 const postFormSchema = z.object({
-    username: z.string(),
-    courseId: z.string(),
-    title: z.string().min(1, "Title is required"),
-    description: z.string().min(1, "Description is required"),
-    picture: z.string().optional(),
-    price: z.string().min(1, "Price is required"),
-    bookmark: z.boolean()
-  });
-  
-  type PostFormData = z.infer<typeof postFormSchema>;
+  username: z.string(),
+  courseId: z.string(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  picture: z.string().optional(),
+  price: z.string().min(1, "Price is required"),
+  bookmark: z.boolean()
+});
+
+type PostFormData = z.infer<typeof postFormSchema>;
   
 
 const CreatePost : FC = () => {

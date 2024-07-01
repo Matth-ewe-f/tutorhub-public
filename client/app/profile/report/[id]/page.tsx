@@ -6,13 +6,10 @@ import NavBar from "../../../../components/Navbar";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ComboBox from "@/components/ComboBox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { report } from "process";
 
 const Page : FC = ({ params }: { params : { id: string }}) => {
 	const { isLoaded, isSignedIn, user } = useUser();

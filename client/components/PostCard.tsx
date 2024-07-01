@@ -1,44 +1,6 @@
 import React, { MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
-import { Bookmark, Plus, Star } from 'lucide-react';
-import BookmarkIcon from './ui/bookmark';
-import axios from 'axios';
-
-interface Post {
-  _id: string;
-  userId: string;
-  userFirstName: string;
-  userLastName: string;
-  activityTitle?: string;
-  activityDescription?: string;
-  courseName?: string;
-  description?: string;
-  coursePostPicKey?: string;
-  activityPostPicKey?: string;
-  price: number;
-  courseNumber?: string;
-  courseDepartment?: string[];
-  gradeReceived?: string;
-  semesterTaken?: string;
-  professorTakenWith?: string;
-  takenAtHopkins?: boolean;
-  schoolTakenAt?: string;
-  reviews: review[];
-  tags?: string[];
-  __v: number;
-}
-
-type review = {
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  isAnonymous?: boolean,
-  reviewDescription: string,
-  rating: number,
-}
+import { Bookmark, Star } from 'lucide-react';
 
 interface PostCardProps {
   post: Post;
@@ -52,7 +14,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdateBookmark }) => {
   const [avgRating, setAvgRating] = useState(5);
   const [isBookmarked, setIsBookmarked] = useState(false); // State to track bookmark status
   const [imgUrl, setImgUrl] = useState(defaultImage);
-  const [bookmarkHover, setBookmarkHover] = useState(false);
 
   const router = useRouter();
 
@@ -156,7 +117,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdateBookmark }) => {
               onMouseEnter={() => setTitleUnderline(false)}
               onMouseLeave={() => setTitleUnderline(true)}
             >
-              {post.userFirstName} {post.userLastName}
+              {post.username}
             </a>
           </p>
         </div>

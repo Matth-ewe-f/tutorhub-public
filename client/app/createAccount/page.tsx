@@ -14,12 +14,6 @@ import { useRouter } from "next/navigation";
 
 import FormData from "form-data";
 
-type sisCourse = {
-  courseTitle: string,
-  courseNumber: string,
-  courseDepartment: string[],
-}
-
 const APP_ID = process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID;
 
 const Page : FC = () => {

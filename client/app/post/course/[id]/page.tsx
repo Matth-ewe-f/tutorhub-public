@@ -26,21 +26,6 @@ import PriceAnalytics from "@/components/PriceAnalytics";
 import { useRouter } from "next/navigation";
 import PostAnalytics from "@/components/PostAnalytics";
 
-type coursePostType = {
-  _id? : string,
-  userId? : string,
-  courseName? : string,
-  description? : string,
-  price? : number,
-  courseNumber? : string,
-  courseDepartment? : string[],
-  gradeReceived? : string,
-  semesterTaken? : string,
-  professorTakenWith? : string,
-  takenAtHopkins? : boolean,
-  schoolTakenAt? : string,
-}
-
 type userType = {
   userId? : string,
   firstName? : string,
@@ -48,24 +33,12 @@ type userType = {
   description? : string,
 }
 
-type Review = {
-  _id: string
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  reviewDescription: string,
-  rating: number,
-}
-
 const Page : FC = ({ params }: { params : { id: string, type: string }}) => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
   const postId = params.id;
   const postType = "coursePosts"
 
-  const [post, setPost] = useState<coursePostType>({});
+  const [post, setPost] = useState<CoursePost>();
   const [poster, setPoster] = useState<userType>({});
   // const [imgUrl, setImgUrl] = useState("/jhulogo.jpeg");
   const [loadedPost, setLoadedPost] = useState(false);

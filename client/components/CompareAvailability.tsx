@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
-import { useUser } from '@clerk/clerk-react';
-
-type Availability = {
-    availability: number[];
-  }
 
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-const api = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const TimeSlot = ({ intervalIndex, selectActive, isSelected, onToggle }) => {
     const borderClass = intervalIndex % 2 !== 0 ? "border-dashed" : "border-solid";

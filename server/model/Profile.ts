@@ -4,17 +4,9 @@ import mongoose = require("mongoose");
 import ViewSchema = require("./Views");
 
 const ProfileSchema = new mongoose.Schema({
-    firstName: {
+    userName: {
       type: String,
       required: true,
-    },
-    lastName: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
     },
     affiliation: {
         type: String,

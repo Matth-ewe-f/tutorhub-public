@@ -8,19 +8,6 @@ import Loader from "@/components/Loader";
 import "@/styles/global.css";
 import "@/styles/basic.css";
 
-interface ProfilePost {
-	_id : string,
-	firstName : string,
-	lastName : string,
-	email : string,
-	affiliation : string,
-	department : string,
-	graduationYear? : string,
-	description? : string
-}
-
-type Profile = ProfilePost;
-
 const Page : FC = () => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [profiles, setProfiles] = useState<Profile[]>([]);

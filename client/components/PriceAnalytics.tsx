@@ -1,14 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 
-type AnalyticsData = {
-  meanPrice: number;
-  comparisonResult: string;
-  myPostPrice: number;
-  percentDiff: number;
-  marketPosition: string;
-};
-
 type Props = {
   postId: string;
 };

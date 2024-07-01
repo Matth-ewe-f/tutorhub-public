@@ -13,12 +13,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-type sisCourse = {
-  courseTitle: string,
-  courseNumber: string,
-  courseDepartment: string[],
-}
-
 const Page : FC = () => {
 	const { isLoaded, isSignedIn, user } = useUser();
 	const router = useRouter();

@@ -6,12 +6,6 @@ import axios from "axios";
 import CreatePost from "@/components/CreatePost";
 import { useRouter } from "next/navigation";
 
-type sisCourse = {
-  courseTitle: string,
-  courseNumber: string,
-  courseDepartment: string[],
-}
-
 const Page : FC = () => {
 	const { user } = useUser();
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;

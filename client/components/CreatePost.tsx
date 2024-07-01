@@ -8,12 +8,6 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { X } from "lucide-react";
 
-type sisCourse = {
-  courseTitle: string,
-  courseNumber: string,
-  courseDepartment: string[],
-}
-
 type createPostProps = {
   sisCourses?: sisCourse[],
   editing?: boolean,

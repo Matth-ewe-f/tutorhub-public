@@ -7,49 +7,6 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem } from './ui/dropdo
 import { DropdownMenuContent } from '@radix-ui/react-dropdown-menu';
 import { Button } from './ui/button';
 
-type view = {
-  viewerId: string,
-  timestamp: string,
-  durationInSeconds: number,
-}
-
-type Review = {
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  reviewDescription: string,
-  rating: number,
-}
-
-type lineGraphPoint = { label: string, value: number }
-
-type pieGraphPoint = { _id: string, count: number }
-
-type Post = {
-  _id: string;
-  userId: string;
-  username?: string;
-  activityTitle?: string;
-  activityDescription?: string;
-  courseName?: string;
-  description?: string;
-  imageUrl?: string;
-  price: number;
-  courseNumber?: string;
-  courseDepartment?: string[];
-  gradeReceived?: string;
-  semesterTaken?: string;
-  professorTakenWith?: string;
-  takenAtHopkins?: boolean;
-  schoolTakenAt?: string;
-  tags?: string[];
-  reviews: Review[],
-  __v: number;
-}
-
 type props = {
   postId: string,
   postType: string

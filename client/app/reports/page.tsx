@@ -12,18 +12,6 @@ import { FC, useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-type report = {
-  _id: string,
-  content: string,
-  reporteeFirstName: string,
-  reporteeLastName: string,
-  reporteeId: string,
-  reporterFirstName: string,
-  reporterLastName: string,
-  reporterId: string,
-  resolved: boolean
-}
-
 const Page : FC = () => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [loading, setLoading] = useState(true);

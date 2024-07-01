@@ -15,41 +15,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ChevronDown } from "lucide-react";
 import Availability from "@/components/Availability";
 
-interface Post {
-  _id: string;
-  userId: string;
-  userFirstName: string;
-  userLastName: string;
-  activityTitle?: string;
-  activityDescription?: string;
-  courseName?: string;
-  description?: string;
-  imageUrl?: string;
-  price: number;
-  courseNumber?: string;
-  courseDepartment?: string[];
-  gradeReceived?: string;
-  semesterTaken?: string;
-  professorTakenWith?: string;
-  takenAtHopkins?: boolean;
-  schoolTakenAt?: string;
-  tags?: string[];
-  reviews: Review[],
-  __v: number;
-}
-
-type Review = {
-  _id: string,
-  postId: string,
-  postName?: string,
-  postType?: string,
-  posterId: string,
-  reviewerId: string,
-  title?: string,
-  reviewDescription: string,
-  rating: number,
-}
-
 const Page : FC = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;

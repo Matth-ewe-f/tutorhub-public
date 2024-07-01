@@ -2,17 +2,6 @@ import axios from "axios";
 import { FC, HTMLAttributes, useEffect, useRef, useState } from "react";
 import { Check, Lightbulb } from "lucide-react";
 
-type report = {
-  content: string,
-  reporteeFirstName: string,
-  reporteeLastName: string,
-  reporteeId: string,
-  reporterFirstName: string,
-  reporterLastName: string,
-  reporterId: string,
-  resolved: boolean
-}
-
 type props = {
   report: report,
   resolveFunc: () => void,
