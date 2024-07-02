@@ -12,82 +12,84 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Cookies from 'universal-cookie';
+import { Menu } from 'lucide-react';
+
+type navLink = {
+  text: string,
+  href: string,
+}
 
 const NavBar: FC<{profile: Profile}> = (props) => {
+  const cookies = new Cookies(null, {path: "/"});
   const [isAdmin, setIsAdmin] = useState(false);
   const [imgUrl, setImgUrl] = useState("/defaultimg.jpeg");
   
+  const signOut = () => {
+    cookies.remove("tutorhub-public-username");
+  }
+
+  // could conditionally include reports page as well
+  const links : navLink[] = [
+    { text: "Browse Posts", href: "browse" },
+    { text: "Make a Post", href: "createPost" },
+    { text: "Search Users", href: "profiles" },
+  ];
+
   return (
-    <nav className="flex justify-between items-center p-4 bg-white h-18">
-      <div className="hidden md:flex items-center space-x-4">
-        <span className="text-xl font-bold mr-2 cursor-default">TUTORHUB</span>
-        <Link 
-          href="/browse" 
-          className="inline-block px-2 py-1 ease-linear duration-75
-          hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
-        >
-          Search
-        </Link>
-        <Link 
-          href="/createPost" 
-          className="inline-block px-2 py-1 ease-linear duration-75
-          hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
-        >
-          Post
-        </Link>
-        <Link 
-          href="/profiles" 
-          className="inline-block px-2 py-1 ease-linear duration-75
-          hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
-        >
-          Profiles
-        </Link>
-        { isAdmin ? 
-          <Link 
-            href="/reports" 
-            className="inline-block px-2 py-1 ease-linear duration-75
+    <nav className="relative flex justify-between items-center px-4 py-3 bg-white shadow-md">
+      <div className="hidden md:flex items-center">
+        <span className="text-xl font-bold mr-4 cursor-default">TUTORHUB</span>
+        <div className='w-[1px] h-8 bg-blue-300'></div>
+        { links.map((link) => {
+          return <>
+            <Link
+              key={`${link.href}-desktop`}
+              href={`/${link.href}`}
+              className="inline-block px-4 py-2 ease-linear duration-75
             hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
-          >
-            Reports
-          </Link>
-          : <></>
-        }
+            >
+              { link.text }
+            </Link>
+            <div className='w-[1px] h-8 bg-blue-300'></div>
+          </>
+        })}
       </div>
       <div className="flex items-center md:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
+            <Menu/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Link href="/browse">Posts</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/profiles">Profiles</Link>
-            </DropdownMenuItem>
+            { links.map((link) => {
+              return <>
+                <DropdownMenuItem key={`${link.href}-mobile`} className='cursor-pointer'>
+                  <Link href={`/${link.href}`} className="text-base">
+                    {link.text}
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div>
-        <Link href="/profile">
-          <Avatar>
-            <AvatarImage src={imgUrl} alt="@shadcn" className='object-cover'/>
-            <AvatarFallback>TH</AvatarFallback>
-          </Avatar>
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Avatar>
+              <AvatarImage src={imgUrl} alt="@shadcn" className='object-cover'/>
+              <AvatarFallback>TH</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem className='cursor-pointer text-base'>
+              <Link href="/profile">Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className='cursor-pointer text-base'>
+              <Link href="/signIn" onClick={signOut}>Sign out</Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </nav>
   );

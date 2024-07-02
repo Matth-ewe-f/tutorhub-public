@@ -55,49 +55,44 @@ const Page : FC = () => {
 
   if (loading) return ( <> <Loader /> </>);
 
-  return (
-    <>
-      <NavBar profile={visitorProfile}/>
-      <div className="flex flex-col md:flex-row min-h-screen">
-        <div className="md:w-1/4 min-w-64 flex flex-col items-center py-3 bg-blue-300">
-          <div className="input-container my-3">
-            <input type="text" name="text" 
-              className="input placeholder-[#406a90]"
-              placeholder="Username"
-              onChange={ (e) => searchItems(e.target.value) } 
-            />
-            <label className="label">Search</label>
-            <div className="top-line"></div>
-            <div className="under-line"></div>
-          </div>
-          <h1 className="text-xl font-extrabold font-sans">Search Profiles</h1>
-        </div>
-        <div className="md:w-3/4">
-        {searchInput.length > 1 ? (
-          <div className="container mx-auto max-w-sm md:max-w-max px-6 py-8">
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProfiles.map((profiles) => (
+  return <>
+		<NavBar profile={visitorProfile} />
+		<div className="flex flex-col lg:flex-row min-h-screen">
+			<div className="flex flex-row flex-wrap min-h-24 lg:flex-col lg:min-w-80 lg:w-1/4 items-center py-3 bg-blue-300">
+				<div className="input-container mx-6 my-3 lg:my-6 flex-grow-[2] lg:flex-grow-0">
+					<input 
+						type="text"
+						name="text"
+						className="min-w-64 w-full input placeholder-[#406a90]"
+						placeholder="Username"
+						onChange={(e) => searchItems(e.target.value)}
+					/>
+					<label className="label">Search</label>
+					<div className="top-line"></div>
+					<div className="under-line"></div>
+				</div>
+			</div>
+			<div className="w-full lg:w-3/4 py-4">
+				<div className="container mx-auto px-6">
+					<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            { searchInput.length > 1 ?
+              filteredProfiles.map((profiles) => (
                 <div className="w-full" key={profiles._id}>
                   <ProfileCard profile={profiles}/>
                 </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="container mx-auto max-w-sm md:max-w-max px-6 py-8">
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {profiles.map((profiles) => (
+              ))
+            :
+              profiles.map((profiles) => (
                 <div className="w-full" key={profiles._id}>
                   <ProfileCard profile={profiles}/>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-        </div>
-      </div>
-    </>
-  );
+              ))
+            }
+					</div>
+				</div>
+			</div>
+		</div>
+	</>;
 };
 
 export default Page;

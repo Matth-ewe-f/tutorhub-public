@@ -5,7 +5,6 @@ import React, { FC, useEffect, useState } from 'react';
 const PostCard: FC<{profile: Profile}> = ({ profile }) => {
   const [img, setImg] = useState("/defaultimg.jpeg");
   const [titleUnderline, setTitleUnderline] = useState(false);
-  const fullName = `${profile.firstName} ${profile.lastName}`;
   const router = useRouter();
 
   useEffect(() => { loadImage() }, [profile]);
@@ -28,7 +27,7 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
 
   const trimBio = (s : string) => {
     if (!s) {
-      return "";
+      return `${profile.username} has not entered a biography yet.`;
     } else if (s.length < 90) {
       return s;
     } else {
@@ -38,7 +37,7 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
 
   return ( <> 
     <div 
-      className="max-w-sm h-96 rounded overflow-hidden shadow-lg bg-white
+      className="max-w-sm rounded overflow-hidden shadow-lg bg-white
       hover:-translate-y-2 transition duration-75 cursor-pointer"
       onMouseEnter={() => setTitleUnderline(true)}
       onMouseLeave={() => setTitleUnderline(false)}
@@ -47,7 +46,7 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
       <img
         className="w-full h-48 object-cover"
         src={img}
-        alt={fullName}
+        alt={profile.username}
       />
       <div className="px-6 py-4">
         <div className="mb-2">
@@ -55,16 +54,14 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
             className={`font-bold text-xl 
             ${titleUnderline ? 'underline' : ''}`}
           >
-            {fullName}
+            {profile.username}
           </div>
           <p className="text-gray-600 text-sm">
-            {profile.email} - {capitalize(profile.department)}
-          </p>
-          <p className="text-gray-600 text-sm">
+            {capitalize(profile.department)} - 
             { profile.affiliation === "student" && profile.graduationYear ?
-              `${capitalize(profile.affiliation)}, class of ${profile.graduationYear}`
+              ` ${capitalize(profile.affiliation)}, class of ${profile.graduationYear}`
             :
-              `${profile.affiliation}`
+              ` ${profile.affiliation}`
             }
           </p>
         </div>
