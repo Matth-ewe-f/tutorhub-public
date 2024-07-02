@@ -170,25 +170,6 @@ const Page: FC = () => {
 		setSearchInput(searchValue);
 	}
 
-	const handleBookmarkUpdate = async (bookmark: string, isCourse: boolean) => {
-		try {
-			const allBookmarks = await axios.get(`${api}/profiles/allBookmarks/${userId}`)
-			let bookmarkIds;
-			if (isCourse) {
-				bookmarkIds = new Set(allBookmarks.data.data.courseBookmarks);
-			} else {
-				bookmarkIds = new Set(allBookmarks.data.data.activityBookmarks);
-			}
-			if (bookmarkIds.has(bookmark)) {
-				await axios.put(`${api}/profiles/deleteBookmark/${userId}`, { bookmark: bookmark, isCourse: isCourse });
-			} else {
-				await axios.put(`${api}/profiles/addBookmark/${userId}`, { bookmark: bookmark, isCourse: isCourse });
-			}
-		} catch (error) {
-			console.error('Error updating bookmark status:', error);
-		}
-	};
-
 	if (loading) {
 		return (<> <Loader /> </>);
 	}
@@ -383,7 +364,6 @@ const Page: FC = () => {
 									key={posts._id}
 									className="max-w-96"
 									post={posts}
-									onUpdateBookmark={handleBookmarkUpdate}
 								/>
 							</div>
 						))}

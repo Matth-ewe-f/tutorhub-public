@@ -1,19 +1,16 @@
 import React, { HTMLAttributes, MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
-import { Bookmark, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 type PostCardProps = {
   post: Post;
-  onUpdateBookmark?: (postId: string, isCoursePost: boolean) => void;
 } & HTMLAttributes<HTMLDivElement>;
 
 const PostCard: React.FC<PostCardProps> = (props) => {
-  const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const post = props.post;
   const defaultImage = '/jhulogo.jpeg';
   const [titleUnderline, setTitleUnderline] = useState(false);
   const [avgRating, setAvgRating] = useState(5);
-  const [isBookmarked, setIsBookmarked] = useState(false); // State to track bookmark status
   const [imgUrl, setImgUrl] = useState(defaultImage);
 
   const router = useRouter();
@@ -49,17 +46,6 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     }
   }
 
-  const toggleBookmark = async (event: MouseEvent<HTMLDivElement>) => {
-    // Prevent the event from propagating to the parent div
-    event.stopPropagation();
-    
-    const isCoursePost = post.courseName ? true : false;
-    const bookmark = post._id;
-
-    await props.onUpdateBookmark(bookmark, isCoursePost); // Trigger callback with postId and new bookmark status
-    setIsBookmarked(prevState => !prevState);
-  };
-
   return (<> 
     <div 
       id={`post-${post._id}`}
@@ -68,17 +54,6 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       onMouseEnter={() => setTitleUnderline(true)}
       onMouseLeave={() => setTitleUnderline(false)}
     >
-      {/* Bookmark icon positioned at the top right corner */}
-      <div className="absolute top-2 right-2" onClick={toggleBookmark}>
-        {/* Use conditional rendering to fill the bookmark icon in black if the post is bookmarked */}
-        <Bookmark
-          id={`bookmark-${post._id}`}
-          className={`relative 
-          ${isBookmarked ? 
-            'fill-black hover:fill-red-500' 
-            : 'hover:fill-green-500'}`}
-        />
-      </div>
       <img
         className="w-full h-48 object-cover"
         src={imgUrl}
