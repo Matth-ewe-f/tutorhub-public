@@ -1,12 +1,10 @@
 .input-container {
   position: relative;
-  width: clamp(100px, 100%, 200px);
 }
 
 .input {
   padding: 10px;
   height: 40px;
-  width: clamp(100px, 100%, 200px);
   border: 2px solid #0B2447;
   border-top: none;
   font-size: 16px;

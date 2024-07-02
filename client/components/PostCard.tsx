@@ -1,14 +1,15 @@
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { HTMLAttributes, MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { Bookmark, Star } from 'lucide-react';
 
-interface PostCardProps {
+type PostCardProps = {
   post: Post;
   onUpdateBookmark?: (postId: string, isCoursePost: boolean) => void;
-}
+} & HTMLAttributes<HTMLDivElement>;
 
-const PostCard: React.FC<PostCardProps> = ({ post, onUpdateBookmark }) => {
+const PostCard: React.FC<PostCardProps> = (props) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const post = props.post;
   const defaultImage = '/jhulogo.jpeg';
   const [titleUnderline, setTitleUnderline] = useState(false);
   const [avgRating, setAvgRating] = useState(5);
@@ -55,14 +56,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdateBookmark }) => {
     const isCoursePost = post.courseName ? true : false;
     const bookmark = post._id;
 
-    await onUpdateBookmark(bookmark, isCoursePost); // Trigger callback with postId and new bookmark status
+    await props.onUpdateBookmark(bookmark, isCoursePost); // Trigger callback with postId and new bookmark status
     setIsBookmarked(prevState => !prevState);
   };
 
   return (<> 
     <div 
       id={`post-${post._id}`}
-      className="relative max-w-sm overflow-hidden bg-white rounded shadow-lg cursor-pointer hover:-translate-y-2 transition duration-75" 
+      className={`relative overflow-hidden bg-white rounded shadow-lg cursor-pointer hover:-translate-y-2 transition duration-75 ${props.className}`}
       onClick={handleClick}
       onMouseEnter={() => setTitleUnderline(true)}
       onMouseLeave={() => setTitleUnderline(false)}

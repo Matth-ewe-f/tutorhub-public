@@ -7,9 +7,14 @@ import ProfileCard from "@/components/ProfileCard";
 import Loader from "@/components/Loader";
 import "@/styles/global.css";
 import "@/styles/basic.css";
+import Cookies from "universal-cookie";
+import { useRouter } from "next/navigation";
 
 const Page : FC = () => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const router = useRouter();
+  const cookies = new Cookies(null, {path: "/"});
+  const [visitorProfile, setVisitorProfile] = useState<Profile>();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -18,12 +23,19 @@ const Page : FC = () => {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
+        const username = cookies.get("tutorhub-public-username");
+        const visitor = await axios.get(`${api}/profiles/getByUsername/${username}`);
+        if (visitor.data.data.length === 0) {
+          router.push('/signIn');
+        } else {
+          setVisitorProfile(visitor.data.data[0]);
+        }
         const response = await axios.get(`${api}/profiles`);
         setProfiles(response.data.data);
       } catch (error) {
-          console.error('Error fetching posts', error);
+        console.error('Error fetching posts', error);
       } finally {
-          setLoading(false);
+        setLoading(false);
       };
     };
     fetchProfiles();
@@ -33,9 +45,7 @@ const Page : FC = () => {
     setSearchInput(searchValue);
     if (searchInput !== '') {
       const filteredProfiles = profiles.filter((profile) => {
-        return profile.firstName.toLowerCase().includes(searchInput.toLowerCase()) ||
-                profile.lastName.toLowerCase().includes(searchInput.toLowerCase()) ||
-                profile.email.toLowerCase().includes(searchInput.toLowerCase());
+        return profile.username.toLowerCase().includes(searchInput.toLowerCase())
       });
       setFilteredProfiles(filteredProfiles);
     } else {
@@ -47,13 +57,13 @@ const Page : FC = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar profile={visitorProfile}/>
       <div className="flex flex-col md:flex-row min-h-screen">
         <div className="md:w-1/4 min-w-64 flex flex-col items-center py-3 bg-blue-300">
           <div className="input-container my-3">
             <input type="text" name="text" 
-              className="input" 
-              placeholder="Name, Email"
+              className="input placeholder-[#406a90]"
+              placeholder="Username"
               onChange={ (e) => searchItems(e.target.value) } 
             />
             <label className="label">Search</label>
