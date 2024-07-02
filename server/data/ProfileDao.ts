@@ -2,8 +2,8 @@ import Profile = require("../model/Profile");
 import mongoose = require("mongoose");
 
 export class ProfileDao {
-  async create(firstName: string, lastName: string, email: string, affiliation: string, department: string, options?: {graduationYear?: string, description?: string}) {
-    let newProfile: any = {firstName, lastName, email, affiliation, department}
+  async create(username: string, affiliation: string, department: string, options?: {graduationYear?: string, description?: string}) {
+    let newProfile: any = {username, affiliation, department}
     if (options){
       if(options.graduationYear){
         newProfile.graduationYear = options.graduationYear
@@ -12,12 +12,16 @@ export class ProfileDao {
         newProfile.description = options.description;
       }
     }
-    const data = await Profile.create(newProfile);
-    return data;
+    return await Profile.create(newProfile);
   }
 
   async readById( _id: string) {
     const data = await Profile.findById(_id).lean().select("-__v");
+    return data;
+  }
+
+  async readByName( username: string) {
+    const data = await Profile.find({username: username});
     return data;
   }
 

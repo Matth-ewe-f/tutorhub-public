@@ -4,9 +4,10 @@ import mongoose = require("mongoose");
 import ViewSchema = require("./Views");
 
 const ProfileSchema = new mongoose.Schema({
-    userName: {
+    username: {
       type: String,
       required: true,
+      unique: true
     },
     affiliation: {
         type: String,

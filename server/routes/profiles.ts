@@ -9,11 +9,11 @@ const db = require('../model/Profile');
 
 router.post("/", async (req: any, res: any) => {
   try {    
-    const {firstName, lastName, email, affiliation, graduationYear, department, description} : {firstName: string, lastName: string, email: string, affiliation: string, graduationYear: string, department: string, description: string} = req.body;
-    const data = await profiles.create( firstName, lastName, email, affiliation, department, {graduationYear, description});
+    const {username, affiliation, graduationYear, department, description} : {username: string, affiliation: string, graduationYear: string, department: string, description: string} = req.body;
+    const data = await profiles.create( username, affiliation, department, {graduationYear, description});
     res.status(200).json({ data });
   } catch (err) {
-    res.status(500).send("Server Error");
+    res.status(400).json(err);
   }
 });
 
@@ -37,16 +37,25 @@ router.get("/:_id", async (req: any, res: any) => {
   }
 });
 
+router.get("/getByUsername/:email", async (req: any, res: any) => {
+  const { username }: { username: string } = req.params;
+  try {
+    const data = await profiles.readByName(username);
+    res.status(200).json({ data });
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
+});
 
 router.get("/getByEmail/:email", async (req: any, res: any) => {
-    const { email }: { email: string } = req.params;
-    try {
-      const data = await profiles.readByEmail(email);
-      res.status(200).json({ data });
-    } catch (err) {
-      res.status(500).send("Server Error");
-    }
-  });
+  const { email }: { email: string } = req.params;
+  try {
+    const data = await profiles.readByEmail(email);
+    res.status(200).json({ data });
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
+});
 
 router.get("/views/:_id", async (req: any, res: any) => {
   const { _id }: { _id: string } = req.params;
