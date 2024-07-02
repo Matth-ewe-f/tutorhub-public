@@ -13,9 +13,11 @@ import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import CompareAvailability from "@/components/CompareAvailability";
+import Cookies from "universal-cookie";
 
 const Page : FC = ({ params }: { params : { id: string }}) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const cookies = new Cookies(null, {path: "/"});
   const [loading, setLoading] = useState(true);
   const [profileData, setProfile] = useState<Profile>();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -26,26 +28,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   const [timeSpent, setTimeSpent] = useState(0);
   const [onPage, setOnPage] = useState(true);
   const [visitorId, setVisitorId] = useState('');
-  const [bookmarkedPosts, setBookmarkedPosts] = useState<Post[]>([]);
-
-  const handleBookmarkUpdate = async (bookmark: string, isCourse: boolean) => {
-    try {
-      const allBookmarks = await axios.get(`${api}/profiles/allBookmarks/${visitorId}`)
-      let bookmarkIds;
-      if (isCourse) {
-        bookmarkIds = new Set(allBookmarks.data.data.courseBookmarks);
-      } else {
-        bookmarkIds = new Set(allBookmarks.data.data.activityBookmarks);
-      }
-      if (bookmarkIds.has(bookmark)) {
-        await axios.put(`${api}/profiles/deleteBookmark/${visitorId}`, { bookmark: bookmark, isCourse: isCourse });
-      } else {
-        await axios.put(`${api}/profiles/addBookmark/${visitorId}`, { bookmark: bookmark, isCourse: isCourse });
-      } 
-    } catch (error) {
-      console.error('Error updating bookmark status:', error);
-    }
-  };
+  const [visitorData, setVisitorData] = useState<Profile>();
   const [availability, setAvailability] = useState(new Array(336).fill(0));
 
   const reviewSortMethods = [
@@ -82,7 +65,6 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
     setReviewAvg(ratingTotal / reviews.length);
   }, [reviews])
   
-  const { isLoaded, isSignedIn, user } = useUser();
   const router = useRouter();
 
   const compareAvail = async () => {
@@ -139,15 +121,20 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   };
 
   const getVisitor = async () => {
-    if (!isLoaded || !isSignedIn || !user) {
-      return;
-    }
     try {
-      const response = await axios.get(`${api}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
-      const id = response.data.data[0]._id;
-      setVisitorId(id);
-      if (id === params.id) {
-        router.replace('profile');
+      const username = cookies.get("tutorhub-public-username");
+      const url = `${api}/profiles/getByUsername/${username}`;
+      const response = await axios.get(url);
+      if (response.data.data.length == 0) {
+        router.replace('signIn');
+        return;
+      } else {
+        setVisitorData(response.data.data[0]);
+        const id = response.data.data[0]._id;
+        setVisitorId(id);
+        if (id === params.id) {
+          router.replace('profile');
+        }
       }
     } catch (error) {
       console.error(error);
@@ -182,12 +169,11 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
     return;
   }
 
-  const handleClickReportUser = () => {
-    router.push(`/profile/report/${params.id}`);
-  }
+  // const handleClickReportUser = () => {
+  //   router.push(`/profile/report/${params.id}`);
+  // }
 
-
-  useEffect(() => { getVisitor() }, [isLoaded, isSignedIn, user]);
+  useEffect(() => { getVisitor() }, []);
 
   useEffect(() => {
     fetchData();
@@ -210,34 +196,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
     return () => clearInterval(intervalId);
   }, [onPage]);
 
-  useEffect(() => updateProfileViews, [])
-
-  useEffect(() => {
-    const getAllBookmarkedPosts = async () => {
-      if (!isLoaded || !isSignedIn || !user || !visitorId) {
-        return;
-      }
-      try {
-        const response = await axios.get(`${api}/profiles/allBookmarks/${visitorId}`);
-        return response.data;
-      } catch (error) {
-        console.error('Error retrieving bookmarks for current viewer');
-      }
-    };
-  
-    const fetchBookmarkedPosts = async () => {
-      try {
-        const idsOfBookmarkedPosts = await getAllBookmarkedPosts();
-        setBookmarkedPosts(idsOfBookmarkedPosts);
-      } catch (error) {
-        console.error('Error retrieving bookmarks for current viewer:', error);
-      }
-    };
-  
-    fetchBookmarkedPosts();
-  
-  }, [isLoaded, isSignedIn, user, visitorId]);
-  
+  useEffect(() => updateProfileViews, []);
 
   if (loading) return ( <> <Loader /> </>);
 
@@ -252,112 +211,120 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
           lg:grid-cols-3 gap-4"
         >
           { posts.map((post) => (
-            <PostCard key={post._id} post={post} onUpdateBookmark={handleBookmarkUpdate}/>
+            <PostCard key={post._id} post={post}/>
           )) }
         </div>
       )
     } else if (activeSection === "Reviews") {
-        return (
-          reviews.length === 0 ?
-            <h3 className="text-lg">No reviews on this profile</h3>
-          :
-            <div className="flex w-full items-start justify-center">
-              <div className="mt-4 mr-8 pt-4 pr-8 min-w-52 h-full border-r border-black"> 
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <div 
-                      className='px-4 py-2 text-md text-white font-bold bg-custom-blue
-                      hover:bg-blue-900 rounded-lg flex'
-                    >
-                      {reviewSort} <ChevronDown/>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    className='bg-blue-300 rounded-xl px-2 py-1.5 border mt-1'
+      return (
+        reviews.length === 0 ?
+          <h3 className="text-lg">No reviews on this profile</h3>
+        :
+          <div className="flex w-full items-start justify-center">
+            <div className="mt-4 mr-8 pt-4 pr-8 min-w-52 h-full border-r border-black"> 
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div 
+                    className='px-4 py-2 text-md text-white font-bold bg-custom-blue
+                    hover:bg-blue-900 rounded-lg flex'
                   >
-                    {
-                      reviewSortMethods.map((method) => {
-                        return (
-                          <DropdownMenuItem 
-                            key={`sort-${method}`}
-                            className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
-                            rounded-xl overflow-hidden'
-                            onClick={ () => setReviewSort(method) }
-                          >
-                            <div className='hover:bg-sky-100 px-3 py-1 w-full'>
-                              {method}
-                            </div>
-                          </DropdownMenuItem>
-                        );
-                      })
-                    }
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              <div className="mt-4 flex flex-col justify-center max-w-3xl w-full">
-                { reviews.map((review) => (
-                  <ReviewCard 
-                    review={review}
-                    className="mb-4 bg-white rounded-lg shadow-md"
-                  />
-                )) }
-              </div>
-            </div>
-        )
-    } else if (activeSection === "Availability") {
-        return (
-          <div className="flex flex-col justify-center max-w-3xl w-full">
-              <CompareAvailability availability={availability} />
+                    {reviewSort} <ChevronDown/>
+                  </div>
+                </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                className='bg-blue-300 rounded-xl px-2 py-1.5 border mt-1'
+              >
+                {
+                  reviewSortMethods.map((method) => {
+                    return (
+                      <DropdownMenuItem 
+                        key={`sort-${method}`}
+                        className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
+                        rounded-xl overflow-hidden'
+                        onClick={ () => setReviewSort(method) }
+                      >
+                        <div className='hover:bg-sky-100 px-3 py-1 w-full'>
+                          {method}
+                        </div>
+                      </DropdownMenuItem>
+                    );
+                  })
+                }
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        )
+          <div className="mt-4 flex flex-col justify-center max-w-3xl w-full">
+            { reviews.map((review) => (
+              <ReviewCard 
+                review={review}
+                className="mb-4 bg-white rounded-lg shadow-md"
+              />
+            )) }
+          </div>
+        </div>
+      )
+    } else if (activeSection === "Schedule") {
+        return <>
+          <div className="flex flex-col justify-center max-w-3xl w-full">
+            <p className="pl-16 font-bold">{profileData.username}'s Schedule</p>
+            <CompareAvailability availability={availability} />
+          </div>
+        </>
+    }
+  }
+
+  const getBiography = () => {
+    if (profileData.description) {
+      return profileData.description;
+    } else {
+      return `${profileData.username} hasn't entered a biography yet, but they're definitely a cool person who you should sign up for tutoring sessions with!`
     }
   }
 
   return (
     <>
-      <Navbar />
+      <Navbar profile={visitorData}/>
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center bg-blue-300
         pt-8 pb-6 md:py-16 px-6 md:px-16"
       >
         <div className="hidden md:block flex-1 max-w-xl">
           <h1 className="text-2xl font-extrabold font-sans uppercase text-black">
-            {profileData.firstName} {profileData.lastName} - {profileData.department}
+            {profileData.username} - {profileData.department}
             {profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}
           </h1>
-          <p className="text-s underline font-light mb-2">{profileData.email}</p>
-          <p className="text-gray-700 text-base text-justify">{profileData.description}</p>
+          <p className="font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="block md:hidden flex-1 max-w-xl">
-          <div className="flex justify-center items-center gap-x-1">
+          <div className="flex mb-2 justify-center items-center gap-x-1">
             <img
               src={imgUrl}
               alt={`Avatar`}
-              className="mr-1 w-12 h-12 rounded-full"
+              className="mr-2 w-12 h-12 rounded-full"
             />
-            <h1 className="text-2xl text-center font-extrabold font-sans uppercase text-black">
-              {profileData.firstName} {profileData.lastName}
-            </h1>
+            <div>
+              <h1 className="my-0 text-2xl text-center font-extrabold font-sans uppercase text-black">
+                {profileData.username}
+              </h1>
+              <p className="text-s text-center uppercase font-light -mt-1">
+                {`${profileData.department}${profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}`}
+              </p>
+            </div>
           </div>
-          <p className="text-s text-center font-light mb-2">
-            <span className="underline">{profileData.email}</span>
-            {" - "}
-            {`${profileData.department}${profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}`}
-          </p>
-          <p className="text-gray-700 text-base text-justify">{profileData.description}</p>
+          <p className="font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="flex flex-col items-center gap-y-2 mt-2 gap-x-4">
-          <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.firstName}`} />
-          <div className="flex gap-x-4">
+          <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.username}`} />
+          {/* <div className="flex gap-x-4">
             <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md" onClick={() => handleClickReportUser()}>
               Report this user
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="w-full bg-blue-300 relative">
       <div className="hidden md:flex ml-8 items-end">
-          { ["Posts", "Reviews", "Availability"].map((value, index) => {
+          { ["Posts", "Reviews", "Schedule"].map((value, index) => {
             return (
               <button 
                 key={`tab-${index}`}
@@ -396,7 +363,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
             <DropdownMenuContent 
               className='bg-sky-100 rounded-xl px-2 py-1.5 border mt-1'
             >
-              { ["Posts", "Reviews", "Availability"]
+              { ["Posts", "Reviews", "Schedule"]
                 .filter((value) => value !== activeSection).map((value, index) => {
                 return (
                   <DropdownMenuItem 
@@ -414,7 +381,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="w-full bg-pageBg absolute h-4 top-[50px] z-30"/>
+      <div className="w-full bg-pageBg absolute h-4 top-[50px] z-30"/>
         <div
           className="relative z-10 border-t border-black bg-pageBg md:px-6 py-8
           flex justify-center"

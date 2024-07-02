@@ -221,23 +221,25 @@ const Page : FC = (props: any) => {
             {profileData.username} - {profileData.department}
             {profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}
           </h1>
-          <p className="text-gray-700 text-base text-justify">{getBiography()}</p>
+          <p className="font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="block md:hidden flex-1 max-w-xl">
-          <div className="flex justify-center items-center gap-x-1">
+          <div className="flex justify-center items-center gap-x-1 mb-2">
             <img
               src={imgUrl}
               alt={`Avatar`}
-              className="mr-1 w-12 h-12 rounded-full object-cover"
+              className="mr-2 w-12 h-12 rounded-full object-cover"
             />
-            <h1 className="text-2xl text-center font-extrabold font-sans uppercase text-black">
-              {profileData.username}
-            </h1>
+            <div>
+              <h1 className="my-0 text-2xl text-center font-extrabold font-sans uppercase text-black">
+                {profileData.username}
+              </h1>
+              <p className="text-s text-center uppercase font-light -mt-1">
+                {`${profileData.department}${profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}`}
+              </p>
+            </div>
           </div>
-          <p className="text-s text-center font-light mb-2">
-            {`${profileData.department}${profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}`}
-          </p>
-          <p className="text-gray-700 text-base text-justify">{profileData.description}</p>
+          <p className="font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="flex-none flex flex-col items-center">
           <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.username}`} />
