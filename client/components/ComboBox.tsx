@@ -36,7 +36,7 @@ const ComboBox : FC<props> = (props : props) => {
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className={ `w-[200px] justify-between shadow-sm ${props.className}` }
+					className={ `w-[200px] justify-between shadow-sm ${props.className} ${props.value ? '' : "text-gray-500"}` }
 					id={props.id}
 				>
 					{props.value
