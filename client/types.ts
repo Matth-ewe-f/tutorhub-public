@@ -61,9 +61,7 @@ type Post = {
 
 type Profile = {
 	_id : string,
-	firstName : string,
-	lastName : string,
-	email : string,
+  username : string,
 	affiliation : string,
 	department : string,
 	graduationYear? : string,

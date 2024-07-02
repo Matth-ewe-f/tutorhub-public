@@ -70,7 +70,6 @@ const Page : FC = () => {
 	useEffect(() => { checkCanSubmit() }, [loginType, username, department]);
 
 	const loginByName = async () => {
-		console.log(loginType);
 		if (loginType === "new") {
 			let body : any = {username, affiliation, department}
 			if (affiliation === "student") {
@@ -90,6 +89,7 @@ const Page : FC = () => {
 		} else {
 			const url = `${api}/profiles/getByUsername/${username}`;
 			const response = await axios.get(url);
+			console.log(response);
 			if (response.status !== 200 || response.data.data.length === 0) {
 				setExistingWarnText("User not found");
 			} else {

@@ -1,16 +1,17 @@
 "use client";
 import "../../styles/global.css";
 import { FC, useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import CreatePost from "@/components/CreatePost";
 import { useRouter } from "next/navigation";
+import Cookies from "universal-cookie";
 
 const Page : FC = () => {
-	const { user } = useUser();
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter();
+	const cookies = new Cookies(null, { path: '/' });
   
+  const [profile, setProfile] = useState<Profile>();
   const [postType, setPostType] = useState("course");
   const [title, setTitle] = useState("");
   const [number, setNumber] = useState("");
@@ -29,7 +30,7 @@ const Page : FC = () => {
 
   const [sisCourses, setSisCourses] = useState<sisCourse[]>([]);
 
-  useEffect(() => { getProfile() }, [user]);
+  useEffect(() => { getProfile() }, []);
 
   const getSisCourses = async () => {
     const response = await axios.get(`${api}/courses/all`);
@@ -39,25 +40,20 @@ const Page : FC = () => {
   useEffect(() => { getSisCourses() }, []);
 
   const getProfile = async () => {
-    if (!user) {
-      return;
-    }
-    const email = user.primaryEmailAddress.toString();
-    const response = await axios.get(`${api}/profiles/getByEmail/${email}`);
+    const username = cookies.get("tutorhub-public-username");
+    const response = await axios.get(`${api}/profiles/getByUsername/${username}`);
     if (response.data.data.length === 0) {
-      router.replace('createAccount');
+      router.replace('signIn');
+    } else {
+      setProfile(response.data.data[0]);
     }
   }
 
   const createCoursePost = async () => {
-    const email = user.primaryEmailAddress.toString();
-    const response = await axios.get(`${api}/profiles/getByEmail/${email}`);
-    const profile = response.data.data[0];
     let body = {
       courseName: title,
       userId: profile._id,
-      userFirstName: profile.firstName,
-      userLastName: profile.lastName,
+      username: profile.username,
       courseNumber: number,
       courseDepartment: [ department ],
       takenAtHopkins: atJHU === "Yes",
@@ -80,18 +76,15 @@ const Page : FC = () => {
     if (description !== "") {
       body["description"] = description;
     }
+    console.log(body);
     return await axios.post(`${api}/coursePosts`, body);
   }
 
   const createActivityPost = async () => {
-    const email = user.primaryEmailAddress.toString();
-    const response = await axios.get(`${api}/profiles/getByEmail/${email}`);
-    const profile = response.data.data[0];
     let body = { 
       activityTitle: title,
       userId: profile._id,
-      userFirstName: profile.firstName,
-      userLastName: profile.lastName,
+      username: profile.username,
     }
     if (price !== "") {
       body["price"] = price.replace(/\D/g, '');

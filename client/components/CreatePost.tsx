@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/nextjs";
 import { ChangeEventHandler, Dispatch, FC, SetStateAction, useState } from "react";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
@@ -75,8 +74,6 @@ const CreatePost : FC<createPostProps> =
   submitText,
   submit,
 }) => {
-	const { isLoaded } = useUser();
-
   const [sisAutofills, setSisAutofills] = useState<sisCourse[]>([]);
   const [realCourse, setRealCourse] = useState(false);
   const [showCourseDropdown, setShowCourseDropdown] = useState(false);
@@ -523,7 +520,7 @@ const CreatePost : FC<createPostProps> =
         id="submit" 
         className="text-lg mt-8 w-28"
         disabled={
-          !isLoaded || submitText == "Loading..."
+          submitText == "Loading..."
           || (!editing && !realCourse && postType === "course")
         }
         onClick={ submit }

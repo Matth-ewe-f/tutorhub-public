@@ -1,6 +1,6 @@
 "use client";
-
 import React, { FC, useEffect, useState } from "react";
+import Cookies from 'universal-cookie';
 import NavBar from "@/components/Navbar";
 import "@/styles/global.css";
 import "@/styles/basic.css";
@@ -15,17 +15,17 @@ import PostCard from "@/components/PostCard";
 import "../../styles/loader.css";
 import Loader from "@/components/Loader";
 import { Checkbox } from "@/components/ui/checkbox"
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 const Page : FC = () => {
-    // Data from Backend
     const api = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const cookies = new Cookies(null, { path: '/' });
+    const router = useRouter();
     const [posts, setPosts] = useState<Post[]>([]);
-    const [userId, setUserId] = useState<string>();
+    const [userId, setUserId] = useState('');
+    const [profile, setProfile] = useState<Profile>();
     const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
     const [bookmarkedPosts, setBookmarkedPosts] = useState<Post[]>([]);
-    const [visitorId, setVisitorId] = useState('');
     
     // Loading State
     const [loading, setLoading] = useState(true);
@@ -51,35 +51,15 @@ const Page : FC = () => {
     });
     const [availabilityFilter, setAvailabilityFilter] = useState(false);
 
-	const { isLoaded, isSignedIn, user } = useUser();
-    const router = useRouter();
-
     const checkProfile = async () => {
-        if (!user) {
-            return;
-        }
-        const email = user.primaryEmailAddress.toString();
-        const response = await axios.get(`${api}/profiles/getByEmail/${email}`);
+		const username = cookies.get("tutorhub-public-username");
+        const response = await axios.get(`${api}/profiles/getByUsername/${username}`);
         if (response.data.data.length === 0) {
-            router.replace('createAccount');
+            router.replace('signIn');
         }
         setUserId(response.data.data[0]._id);
+        setProfile(response.data.data[0]);
     }
-
-    const getVisitor = async () => {
-        if (!isLoaded || !isSignedIn || !user) {
-          return;
-        }
-        try {
-          const response = await axios.get(`${api}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
-          const id = response.data.data[0]._id;
-          setVisitorId(id);
-        } catch (error) {
-          console.error(error);
-        }
-    }
-
-    useEffect(() => { getVisitor() }, [isLoaded, isSignedIn, user]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -95,7 +75,8 @@ const Page : FC = () => {
             };
             }
             fetchData();
-        }, [api, user]);
+        }, []
+    );
 
     useEffect(() => {
         filterPosts();
@@ -189,7 +170,7 @@ const Page : FC = () => {
 
     const handleBookmarkUpdate = async (bookmark: string, isCourse: boolean) => {
         try {
-          const allBookmarks = await axios.get(`${api}/profiles/allBookmarks/${visitorId}`)
+          const allBookmarks = await axios.get(`${api}/profiles/allBookmarks/${userId}`)
           let bookmarkIds;
           if (isCourse) {
             bookmarkIds = new Set(allBookmarks.data.data.courseBookmarks);
@@ -197,9 +178,9 @@ const Page : FC = () => {
             bookmarkIds = new Set(allBookmarks.data.data.activityBookmarks);
           }
           if (bookmarkIds.has(bookmark)) {
-            await axios.put(`${api}/profiles/deleteBookmark/${visitorId}`, { bookmark: bookmark, isCourse: isCourse });
+            await axios.put(`${api}/profiles/deleteBookmark/${userId}`, { bookmark: bookmark, isCourse: isCourse });
           } else {
-            await axios.put(`${api}/profiles/addBookmark/${visitorId}`, { bookmark: bookmark, isCourse: isCourse });
+            await axios.put(`${api}/profiles/addBookmark/${userId}`, { bookmark: bookmark, isCourse: isCourse });
           } 
         } catch (error) {
           console.error('Error updating bookmark status:', error);
@@ -210,7 +191,7 @@ const Page : FC = () => {
     return ( <> <Loader /> </>);
   }
   return <>
-  <NavBar />
+    <NavBar profile={profile} />
     <div className="flex min-h-screen">
         <div className="hidden lg:flex lg:w-1/4 flex-col items-center py-3 bg-blue-300">
             <div className="input-container my-6">
@@ -515,7 +496,6 @@ const Page : FC = () => {
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
-                
                 </div>
                 </div>
                 {/* POSTS SECTION */}
@@ -525,8 +505,8 @@ const Page : FC = () => {
                     ))}
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
     </>;
 };
 

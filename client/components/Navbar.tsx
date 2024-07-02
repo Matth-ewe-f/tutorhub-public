@@ -2,7 +2,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import Link from 'next/link'; 
 import { SignOutButton } from '@clerk/nextjs';
-import { useUser } from '@clerk/clerk-react';
 import {
   Avatar,
   AvatarFallback,
@@ -24,37 +23,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import axios from 'axios';
 
-const NavBar: FC = () => {
-  const api = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const { isLoaded, isSignedIn, user } = useUser();
-  const [ isAdmin, setIsAdmin ] = useState(false);
+const NavBar: FC<{profile: Profile}> = (props) => {
+  const [isAdmin, setIsAdmin] = useState(false);
   const [imgUrl, setImgUrl] = useState("/defaultimg.jpeg");
-
-  const fetchUserData = async () => {
-    if (!isLoaded || !isSignedIn) {
-      return false;
-    }
-    const userInfo = await axios.get(`${api}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
-    if (userInfo.data.data.length === 0) {
-      return;
-    }
-    if (userInfo.data.data[0].profilePicKey) {
-      const key = userInfo.data.data[0].profilePicKey;
-      const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`
-      setImgUrl(url);
-    }
-  }
-
-  useEffect(() => { fetchUserData() }, [isLoaded, isSignedIn, user]);
-
-  useEffect(() => {
-    if (isSignedIn) {
-      // TODO change after creating page
-      if (String(user.primaryEmailAddress) == "admin@jhu.edu") {
-        setIsAdmin(true);
-      }
-    }
-  }, [user])
   
   return (
     <nav className="flex justify-between items-center p-4 bg-white h-18">
@@ -73,13 +44,6 @@ const NavBar: FC = () => {
           hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
         >
           Profiles
-        </Link>
-        <Link 
-          href="/chat" 
-          className="inline-block px-2 py-1 ease-linear duration-75
-          hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
-        >
-          Messages
         </Link>
         <Link 
           id='bookmarks-nav'
@@ -133,8 +97,6 @@ const NavBar: FC = () => {
       </div>
       <div>
           <div>
-          { isSignedIn ?
-          <>
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Avatar>
@@ -157,12 +119,6 @@ const NavBar: FC = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            </>
-          :
-            <Link href="/signIn">
-              Sign In
-            </Link>
-          }
           </div>
       </div>
     </nav>
