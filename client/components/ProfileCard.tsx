@@ -59,7 +59,7 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
           <p className="text-gray-600 text-sm">
             {capitalize(profile.department)} - 
             { profile.affiliation === "student" && profile.graduationYear ?
-              ` ${capitalize(profile.affiliation)}, class of ${profile.graduationYear}`
+              ` ${capitalize(profile.affiliation)}, ${profile.graduationYear}`
             :
               ` ${capitalize(profile.affiliation)}`
             }

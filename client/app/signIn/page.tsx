@@ -73,7 +73,7 @@ const Page : FC = () => {
 		if (loginType === "new") {
 			let body : any = {username, affiliation, department}
 			if (affiliation === "student") {
-				body.year = year;
+				body.graduationYear = year;
 			}
 			const response = await axios.post(`${api}/profiles`, body, {validateStatus: () => true});
 			if (response.status !== 200) {
