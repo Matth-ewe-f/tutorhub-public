@@ -37,7 +37,7 @@ router.get("/:_id", async (req: any, res: any) => {
   }
 });
 
-router.get("/getByUsername/:email", async (req: any, res: any) => {
+router.get("/getByUsername/:username", async (req: any, res: any) => {
   const { username }: { username: string } = req.params;
   try {
     const data = await profiles.readByName(username);
