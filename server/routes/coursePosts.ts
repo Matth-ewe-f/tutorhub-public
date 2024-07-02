@@ -7,8 +7,8 @@ const db = require('../model/Profile');
 
 router.post("/", async (req: any, res: any) => {
   try {
-    const {userId, userFirstName, userLastName, courseName, description, price, courseNumber, courseDepartment, gradeReceived, semesterTaken, professorTakenWith, takenAtHopkins, schoolTakenAt}: {userId: string, userFirstName: string, userLastName: string, courseName: string, description: string, price: number, courseNumber: string, courseDepartment: string[], gradeReceived: string, semesterTaken: string, professorTakenWith: string, takenAtHopkins: boolean, schoolTakenAt: string} = req.body
-    const newPost = await CoursePostDao.create(userId, userFirstName, userLastName, courseName, takenAtHopkins, {description, price, courseNumber, courseDepartment, gradeReceived, semesterTaken, professorTakenWith, schoolTakenAt});
+    const {userId, username, courseName, description, price, courseNumber, courseDepartment, gradeReceived, semesterTaken, professorTakenWith, takenAtHopkins, schoolTakenAt}: {userId: string, username: string, courseName: string, description: string, price: number, courseNumber: string, courseDepartment: string[], gradeReceived: string, semesterTaken: string, professorTakenWith: string, takenAtHopkins: boolean, schoolTakenAt: string} = req.body
+    const newPost = await CoursePostDao.create(userId, username, courseName, takenAtHopkins, {description, price, courseNumber, courseDepartment, gradeReceived, semesterTaken, professorTakenWith, schoolTakenAt});
     res.status(201).json({ newPost });
   } catch (err) {
     console.error(err);

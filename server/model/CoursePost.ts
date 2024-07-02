@@ -12,11 +12,7 @@ const CoursePostSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    userFirstName: {
-        type: String,
-        required: true,
-    },
-    userLastName: {
+    username: {
         type: String,
         required: true,
     },

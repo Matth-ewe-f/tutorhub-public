@@ -16,8 +16,8 @@ interface PostReview {
 
 router.post("/", async (req: any, res: any) => {
   try {
-    const {userId, userFirstName, userLastName, activityTitle, activityDescription, activityPostPicKey, price, tags}: {userId: string, userFirstName: string, userLastName: string, activityTitle: string, activityDescription: string, activityPostPicKey: string, price: string, tags: [String]} = req.body;
-    const newPost = await ActivityPostDao.create(userId, userFirstName, userLastName, activityTitle, {activityDescription, activityPostPicKey, price, tags});
+    const {userId, username, activityTitle, activityDescription, activityPostPicKey, price, tags}: {userId: string, username: string, activityTitle: string, activityDescription: string, activityPostPicKey: string, price: string, tags: [String]} = req.body;
+    const newPost = await ActivityPostDao.create(userId, username, activityTitle, {activityDescription, activityPostPicKey, price, tags});
     res.status(201).json({ newPost });
   } catch (err) {
     res.status(500).send("Server Error");
