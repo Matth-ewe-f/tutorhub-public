@@ -1,7 +1,6 @@
 "use client";
 import React, { FC, useEffect, useState } from 'react';
 import Link from 'next/link'; 
-import { SignOutButton } from '@clerk/nextjs';
 import {
   Avatar,
   AvatarFallback,
@@ -112,10 +111,6 @@ const NavBar: FC<{profile: Profile}> = (props) => {
                   </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/chat">Messages</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <SignOutButton/>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

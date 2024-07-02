@@ -4,7 +4,6 @@ import axios from 'axios';
 import Link from 'next/link'; 
 import { useRouter } from "next/navigation";
 import "../../styles/global.css";
-import { useUser } from '@clerk/clerk-react';
 import PostCard from '../../components/PostCard';
 import Navbar from "../../components/Navbar"
 import Loader from '../../components/Loader';
@@ -14,10 +13,11 @@ import ProfileAnalytics from "@/components/ProfileAnalytics";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import Availability from "@/components/Availability";
+import Cookies from "universal-cookie";
 
 const Page : FC = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const cookies = new Cookies(null, {path: "/"});
   const [posts, setPosts] = useState<Post[]>([]);
   const [bestPosts, setBestPosts] = useState<Post[]>([]);
   const [reviewAvg, setReviewAvg] = useState(5);
@@ -35,13 +35,11 @@ const Page : FC = () => {
   const router = useRouter();
 
   const fetchData = async () => {
-    if (!isLoaded || !isSignedIn) {
-      return false;
-    }
     try {
-      const userInfo = await axios.get(`${api}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
+      const username = cookies.get("tutorhub-public-username");
+      const userInfo = await axios.get(`${api}/profiles/getByUsername/${username}`);
       if (userInfo.data.data.length === 0) {
-        router.replace('/createAccount');
+        router.replace('/signIn');
       }
       setProfileData(userInfo.data.data[0]);
       const posts = await axios.get(`${api}/allPosts/findAllByUserId/${userInfo.data.data[0]._id}`);
@@ -89,7 +87,7 @@ const Page : FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [api, user, isLoaded, isSignedIn]);
+  }, []);
 
   useEffect(() => {
     let ratingTotal = 0;
@@ -199,17 +197,16 @@ const Page : FC = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar profile={profileData}/>
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center
        bg-blue-300 pt-8 pb-6 md:py-16 px-6 md:px-16"
        >
         <div className="hidden md:block flex-1 max-w-xl">
           <h1 className="text-2xl font-extrabold font-sans uppercase text-black">
-            {profileData.firstName} {profileData.lastName} - {profileData.department}
+            {profileData.username} - {profileData.department}
             {profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}
           </h1>
-          <p className="text-s underline font-light mb-2">{profileData.email}</p>
           <p className="text-gray-700 text-base text-justify">{profileData.description}</p>
         </div>
         <div className="block md:hidden flex-1 max-w-xl">
@@ -220,12 +217,10 @@ const Page : FC = () => {
               className="mr-1 w-12 h-12 rounded-full object-cover"
             />
             <h1 className="text-2xl text-center font-extrabold font-sans uppercase text-black">
-              {profileData.firstName} {profileData.lastName}
+              {profileData.username}
             </h1>
           </div>
           <p className="text-s text-center font-light mb-2">
-            <span className="underline">{profileData.email}</span>
-            {" - "}
             {`${profileData.department}${profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}`}
           </p>
           <p className="text-gray-700 text-base text-justify">{profileData.description}</p>

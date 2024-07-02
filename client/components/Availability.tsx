@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { useUser } from '@clerk/clerk-react';
+import Cookies from 'universal-cookie';
 
 
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -62,25 +62,23 @@ const HourLabels = () => {
 const Page = () => {
     const [select, setSelect] = useState(false);
     const [selections, setSelections] = useState(new Array(336).fill(0));
-    const { isLoaded, isSignedIn, user } = useUser();
     const [userId, setUserId] = useState('');
+    const cookies = new Cookies(null, { path: "/" });
 
     const fetchData = async () => {
-        if (!isLoaded || !isSignedIn) {
-          return false;
-        }
-        const userInfo = await axios.get(`${api}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
-        const userId = userInfo.data.data[0]._id;
-        setUserId(userId);
-        const availability = userInfo.data.data[0].availability;
-        const avail = new Array(336).fill(0);
-        availability.forEach(index => avail[index] = 1);
-        setSelections(avail);
+      const username = cookies.get("tutorhub-public-username");
+      const userInfo = await axios.get(`${api}/profiles/getByUsername/${username}`);
+      const userId = userInfo.data.data[0]._id;
+      setUserId(userId);
+      const availability = userInfo.data.data[0].availability;
+      const avail = new Array(336).fill(0);
+      availability.forEach(index => avail[index] = 1);
+      setSelections(avail);
     }
 
     useEffect(() => {
         fetchData();
-    }, [api, user, isLoaded, isSignedIn]);
+    }, []);
 
     const handleEditAvailability = async () => {
         const availability = selections.map((value, index) => value === 1 ? index : -1).filter(index => index !== -1);
