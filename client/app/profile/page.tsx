@@ -15,24 +15,33 @@ import { ChevronDown } from "lucide-react";
 import Availability from "@/components/Availability";
 import Cookies from "universal-cookie";
 
-const Page : FC = () => {
+const Page : FC = (props: any) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const cookies = new Cookies(null, {path: "/"});
+  const router = useRouter();
+  const sections = ["Posts", "Reviews", "Analytics", "Schedule"];
+
+  const getDefaultSection = () => {
+    let parameter = props.searchParams.section;
+    if (!sections.includes(parameter)) {
+      return "Posts";
+    }
+    return parameter === undefined ? "Posts" : parameter;
+  }
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [bestPosts, setBestPosts] = useState<Post[]>([]);
   const [reviewAvg, setReviewAvg] = useState(5);
-  const [profileData, setProfileData] = useState(null);
+  const [profileData, setProfileData] = useState<Profile>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [imgUrl, setImgUrl] = useState("../defaultimg.jpeg");
-  const [activeSection, setActiveSection] = useState("Posts");
+  const [activeSection, setActiveSection] = useState(getDefaultSection());
   const reviewSortMethods = [
     "Highest Rating",
     "Lowest Rating"
   ]
   const [reviewSort, setReviewSort] = useState(reviewSortMethods[0]);
-
-  const router = useRouter();
 
   const fetchData = async () => {
     try {
@@ -116,21 +125,7 @@ const Page : FC = () => {
   }
 
   const getTabSection = () => {
-    if (activeSection === "Posts") {
-      if (posts.length === 0) {
-        return <h3 className="mt-8 text-xl">You haven't made any posts yet!</h3>
-      }
-      return (
-        <div 
-          className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2
-          lg:grid-cols-3 gap-4"
-        >
-          { posts.map((post) => (
-            <PostCard key={post._id} post={post} />
-          )) }
-        </div>
-      )
-    } else if (activeSection === "Reviews") {
+    if (activeSection === "Reviews") {
       if (reviews.length === 0) {
         return <h3 className="mt-8 text-xl">You have no reviews</h3>
       }
@@ -183,15 +178,34 @@ const Page : FC = () => {
         return <></>
       } 
       return <ProfileAnalytics profileId={profileData._id} bestPosts={bestPosts}/>
-    } else if (activeSection === "Availability") {
+    } else if (activeSection === "Schedule") {
         return (
           <div className="flex flex-col justify-center max-w-3xl w-full">
-              <Availability />
+            <Availability />
           </div>
         )
+    } else {
+      if (posts.length === 0) {
+        return <h3 className="mt-8 text-xl">You haven't made any posts yet!</h3>
+      }
+      return (
+        <div 
+          className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2
+          lg:grid-cols-3 gap-4"
+        >
+          { posts.map((post) => (
+            <PostCard key={post._id} post={post} />
+          )) }
+        </div>
+      )
     }
-    else {
-      return <></>
+  }
+
+  const getBiography = () => {
+    if (profileData.description) {
+      return profileData.description;
+    } else {
+      return `${profileData.username} hasn't entered a biography yet, but they're definitely a cool person who you should sign up for tutoring sessions with!`
     }
   }
 
@@ -200,14 +214,14 @@ const Page : FC = () => {
       <Navbar profile={profileData}/>
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center
-       bg-blue-300 pt-8 pb-6 md:py-16 px-6 md:px-16"
+       bg-blue-300 pt-8 pb-6 md:py-12 px-6 md:px-16"
        >
         <div className="hidden md:block flex-1 max-w-xl">
           <h1 className="text-2xl font-extrabold font-sans uppercase text-black">
             {profileData.username} - {profileData.department}
             {profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}
           </h1>
-          <p className="text-gray-700 text-base text-justify">{profileData.description}</p>
+          <p className="text-gray-700 text-base text-justify">{getBiography()}</p>
         </div>
         <div className="block md:hidden flex-1 max-w-xl">
           <div className="flex justify-center items-center gap-x-1">
@@ -226,7 +240,7 @@ const Page : FC = () => {
           <p className="text-gray-700 text-base text-justify">{profileData.description}</p>
         </div>
         <div className="flex-none flex flex-col items-center">
-          <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.firstName}`} />
+          <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.username}`} />
           { reviews.length > 0 ?
             <RatingStars rating={reviewAvg} starSize={26} numReviews={reviews.length} className="mt-2"/>
           :
@@ -238,17 +252,12 @@ const Page : FC = () => {
                 Edit Your Profile
               </button>
             </Link>
-            <Link href="/createPost" passHref>
-              <button className="bg-custom-blue hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-md">
-                Create Post
-              </button>
-            </Link>
           </div>
         </div>
       </div>
       <div className="w-full bg-blue-300 relative">
         <div className="hidden md:flex ml-8 items-end">
-          { ["Posts", "Reviews", "Analytics", "Availability"].map((value, index) => {
+          { sections.map((value, index) => {
             return (
               <button 
                 key={`tab-${index}`}
@@ -287,7 +296,7 @@ const Page : FC = () => {
             <DropdownMenuContent 
               className='bg-sky-100 rounded-xl px-2 py-1.5 border mt-1'
             >
-              { ["Posts", "Reviews", "Analytics", "Availability"]
+              { sections
                 .filter((value) => value !== activeSection).map((value, index) => {
                 return (
                   <DropdownMenuItem 

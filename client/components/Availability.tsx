@@ -115,11 +115,11 @@ const Page = () => {
           >
             {select ? 'Save' : 'Edit'}
           </button>
-          <p className={`font-bold w-96 ${select ? 'text-red-600' : ''}`}>
+          <p className={`font-bold w-[36rem] ${select ? 'text-red-600' : ''}`}>
             { select ?
-              "Currently editing availability..."
+              "Currently editing schedule. Click a time slot to toggle it"
             :
-              "Your Availability"
+              "Your Schedule"
             }
           </p>
         </div>
