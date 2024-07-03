@@ -9,6 +9,11 @@ const nextConfig = {
         destination: '/browse',
         permanent: false,
       },
+      {
+        source: '/editPost/:unused*',
+        destination: '/browse',
+        permanent: false,
+      }
     ]
   },
 }
