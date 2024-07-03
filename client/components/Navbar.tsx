@@ -18,6 +18,7 @@ import { Menu } from 'lucide-react';
 type navLink = {
   text: string,
   href: string,
+  adminOnly?: boolean,
 }
 
 const NavBar: FC<{profile: Profile}> = (props) => {
@@ -88,6 +89,13 @@ const NavBar: FC<{profile: Profile}> = (props) => {
             <DropdownMenuItem className='cursor-pointer text-base'>
               <Link href="/signIn" onClick={signOut}>Sign out</Link>
             </DropdownMenuItem>
+            { props.profile && props.profile.username === "Admin" ?
+              <DropdownMenuItem className='cursor-pointer text-base'>
+                <Link href="/reports">Admin Console</Link>
+              </DropdownMenuItem>
+            :
+              <></>
+            }
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

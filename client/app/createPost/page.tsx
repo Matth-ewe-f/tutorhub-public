@@ -5,6 +5,7 @@ import axios from "axios";
 import CreatePost from "@/components/CreatePost";
 import { useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
+import { Loader } from "lucide-react";
 
 const Page : FC = () => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -27,6 +28,7 @@ const Page : FC = () => {
   const [photoFile, setPhotoFile] = useState<File>(null);
 	const [refilling, setRefilling] = useState(false);
   const [submitText, setSubmitText] = useState("Finish");
+  const [loading, setLoading] = useState(true);
 
   const [sisCourses, setSisCourses] = useState<sisCourse[]>([]);
 
@@ -41,11 +43,15 @@ const Page : FC = () => {
 
   const getProfile = async () => {
     const username = cookies.get("tutorhub-public-username");
+    if (username === "Admin") {
+      router.replace('/');
+    }
     const response = await axios.get(`${api}/profiles/getByUsername/${username}`);
     if (response.data.data.length === 0) {
       router.replace('signIn');
     } else {
       setProfile(response.data.data[0]);
+      setLoading(false);
     }
   }
 
@@ -128,6 +134,10 @@ const Page : FC = () => {
       setSubmitText("Done!");
       router.replace('/profile');
     }
+  }
+
+  if (loading) {
+    return <Loader/>
   }
 
   return <>

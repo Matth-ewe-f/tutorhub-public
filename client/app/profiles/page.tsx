@@ -31,7 +31,9 @@ const Page : FC = () => {
           setVisitorProfile(visitor.data.data[0]);
         }
         const response = await axios.get(`${api}/profiles`);
-        setProfiles(response.data.data);
+        let data : Profile[] = response.data.data;
+        data = data.filter((p) => p.username !== "Admin");
+        setProfiles(data);
       } catch (error) {
         console.error('Error fetching posts', error);
       } finally {

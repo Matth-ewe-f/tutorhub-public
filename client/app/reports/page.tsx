@@ -5,37 +5,36 @@ import "@/styles/basic.css";
 import Loader from "@/components/Loader";
 import NavBar from "@/components/Navbar";
 import ReportCard from "@/components/ReportCard";
-import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import Cookies from "universal-cookie";
 
 const Page : FC = () => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const cookies = new Cookies(null, {path: "/"});
   const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState<Profile>();
   const [authorized, setAuthorized] = useState(false);
   const [allReports, setAllReports] = useState<report[]>([]);
   const [visibleReports, setVisibleReports] = useState<report[]>([]);
   const [viewMode, setViewMode] = useState("unresolved");
-  const { isLoaded, isSignedIn, user } = useUser();
   const router = useRouter();
 
-  const verifyAdmin = () => {
-    if (!isLoaded || !isSignedIn || !user) {
-      return;
-    }
-    if (user.primaryEmailAddress.toString() === "admin@jhu.edu") {
-      setAuthorized(true);
-    } else {
-      // to debug without logging in as admin, comment out 45 and uncomment 46
+  const verifyAdmin = async () => {
+    const username = cookies.get("tutorhub-public-username");
+    const response = await axios.get(`${api}/profiles/getByUsername/${username}`);
+    if (response.data.data.length == 0 || username !== "Admin") {
       router.replace("/");
-      // setAuthorized(true);
+    } else {
+      setProfileData(response.data.data[0]);
+      setAuthorized(true);
     }
   }
 
-  useEffect(verifyAdmin, [isLoaded, isSignedIn, user])
+  useEffect(() => { verifyAdmin() }, [])
 
   const loadReports = async () => {
     if (!authorized) {
@@ -80,7 +79,7 @@ const Page : FC = () => {
 
   return (
     <>
-      <NavBar/>
+      <NavBar profile={profileData}/>
       <div className="flex flex-col md:flex-row md:justify-center min-h-96 mx-4">
         <div 
           className="mt-4 md:mt-12 md:pr-6 md:mr-12 pt-4 min-w-56
@@ -124,6 +123,11 @@ const Page : FC = () => {
               />
             )
           })}
+          { visibleReports.length === 0 ? 
+            <p>No reports!</p>
+          :
+            <></>
+          }
         </div>
       </div>
     </>
