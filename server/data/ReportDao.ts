@@ -13,8 +13,8 @@ interface PostReview {
 
 export class ReportDao {
 
-    async create(reporterId: string, reporterFirstName: string, reporterLastName: string, content: string, reporteeId: string, reporteeFirstName: string, reporteeLastName: string) {
-        const newReport = {reporterId, reporterFirstName, reporterLastName, content, reporteeId, reporteeFirstName, reporteeLastName, resolved: false}
+    async create(reporterId: string, reporterName: string, content: string, reporteeId: string, reporteeName: string) {
+        const newReport = {reporterId, reporterName, content, reporteeId, reporteeName, resolved: false}
         const data = await Report.create(newReport);
         return data;
     }

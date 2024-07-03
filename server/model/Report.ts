@@ -7,11 +7,7 @@ const ReportSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    reporterFirstName: {
-        type: String,
-        required: true,
-    },
-    reporterLastName: {
+    reporterName: {
         type: String,
         required: true,
     },
@@ -23,11 +19,7 @@ const ReportSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    reporteeFirstName: {
-        type: String,
-        required: true,
-    },
-    reporteeLastName: {
+    reporteeName: {
         type: String,
         required: true,
     },

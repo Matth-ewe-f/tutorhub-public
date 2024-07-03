@@ -6,8 +6,8 @@ const ReportDao = new ReportDaoClass();
 
 router.post("/", async (req: any, res: any) => {
   try {
-    const {reporterId, reporterFirstName, reporterLastName, content, reporteeId, reporteeFirstName, reporteeLastName}: {reporterId: string, reporterFirstName: string, reporterLastName: string, content: string, reporteeId: string, reporteeFirstName: string, reporteeLastName: string} = req.body;
-    const newReport = await ReportDao.create(reporterId, reporterFirstName, reporterLastName, content, reporteeId, reporteeFirstName, reporteeLastName);
+    const {reporterId, reporterName, content, reporteeId, reporteeName}: {reporterId: string, reporterName: string, content: string, reporteeId: string, reporteeName: string} = req.body;
+    const newReport = await ReportDao.create(reporterId, reporterName, content, reporteeId, reporteeName);
     res.status(201).json({ newReport });
   } catch (err) {
     res.status(500).send("Server Error");
