@@ -169,9 +169,9 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
     return;
   }
 
-  // const handleClickReportUser = () => {
-  //   router.push(`/profile/report/${params.id}`);
-  // }
+  const handleClickReportUser = () => {
+    router.push(`/profile/report/${params.id}`);
+  }
 
   useEffect(() => { getVisitor() }, []);
 
@@ -315,11 +315,11 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
         </div>
         <div className="flex flex-col items-center gap-y-2 mt-2 gap-x-4">
           <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.username}`} />
-          {/* <div className="flex gap-x-4">
+          <div className="flex gap-x-4">
             <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md" onClick={() => handleClickReportUser()}>
               Report this user
             </button>
-          </div> */}
+          </div>
         </div>
       </div>
       <div className="w-full bg-blue-300 relative">

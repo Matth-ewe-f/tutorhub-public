@@ -16,17 +16,9 @@ const ReportCard : FC<props> = (props) => {
   const [reporterPic, setReporterPic] = useState("/defaultimg.jpeg");
   const [reporteePic, setReporteePic] = useState("/defaultimg.jpeg");
   const textRef = useRef<HTMLParagraphElement>(null);
-  
-  const reporteeFullName = () => {
-    return `${report.reporteeFirstName} ${report.reporteeLastName}`;
-  }
 
   const reporteeLink = () => {
     return `profile/${report.reporteeId}`;
-  }
-
-  const reporterFullName = () => {
-    return `${report.reporterFirstName} ${report.reporterLastName}`;
   }
 
   const reporterLink = () => {
@@ -102,7 +94,7 @@ const ReportCard : FC<props> = (props) => {
             alt={`Avatar`}
             className="hidden md:inline-block mr-1 w-8 h-8 rounded-full object-cover"
           />
-          { reporterFullName() }
+          { report.reporterName }
         </a>
         {" reported "}
         <a 
@@ -114,7 +106,7 @@ const ReportCard : FC<props> = (props) => {
             alt={`Avatar`}
             className="hidden md:inline-block mr-1 w-8 h-8 rounded-full object-cover"
           />
-          { reporteeFullName() }
+          { report.reporteeName }
         </a>
       </div>
     )

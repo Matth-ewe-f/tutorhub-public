@@ -1,8 +1,7 @@
 "use client";
+import "@/styles/global.css";
 import React, { FC, useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import "../../../../styles/global.css";
-import NavBar from "../../../../components/Navbar";
+import NavBar from "@/components/Navbar";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,58 +9,49 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from "universal-cookie";
+import Loader from "@/components/Loader";
 
 const Page : FC = ({ params }: { params : { id: string }}) => {
-	const { isLoaded, isSignedIn, user } = useUser();
 	const router = useRouter();
-  	const BACKEND_URL : string = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
+	const BACKEND_URL : string = process.env.NEXT_PUBLIC_BACKEND_URL;
+	const cookies = new Cookies(null, {path: "/"});
+	const [profileName, setProfileName] = useState("");
 	const [content, setContent] = useState("");
 	const [refilling, setRefilling] = useState(false);
-  	const [userId, setUserId] = useState("");
-
-	const [reporteeFirstName, setReporteeFirstName] = useState("");
-	const [reporteeLastName, setReporteeLastName] = useState("");
+	const [userId, setUserId] = useState("");
+	const [reporteeName, setReporteeName] = useState("");
+	const [loading, setLoading] = useState(true);
 
   const [profileData, setProfileData] = React.useState(null);
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return;
+			const username = cookies.get("tutorhub-public-username");
       try {
-        const response = await axios.get(`${BACKEND_URL}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
-			if (response.data.data.length === 0) {
-				router.replace('/createAccount');
-            }
-        setProfileData(response.data);
-		
-		const response2 = await axios.get(`${BACKEND_URL}/profiles/${params.id}`);
-		setReporteeFirstName(response2.data.data.firstName);
-		setReporteeLastName(response2.data.data.lastName);
-
+        const response = await axios.get(`${BACKEND_URL}/profiles/getByUsername/${username}`);
+				if (response.data.data.length === 0) {
+					router.replace('/signIn');
+				}
+				setProfileData(response.data.data[0]);
+				const response2 = await axios.get(`${BACKEND_URL}/profiles/${params.id}`);
+				setReporteeName(response2.data.data.username);
+				setLoading(false);
       } catch (error) {
         console.error("Failed to fetch profile:", error);
       }
     };
 
     fetchProfile();
-  }, [user, BACKEND_URL]);
+  }, []);
 
 
   useEffect(() => {
     if (profileData) {
-      setFirstName(profileData.data[0].firstName);
-      setLastName(profileData.data[0].lastName);
+      setProfileName(profileData.username);
       setContent("");
-      setUserId(profileData.data[0]._id);
+      setUserId(profileData._id);
     }
   }, [profileData]);
-
-	if (!isLoaded || !isSignedIn) {
-		return <></>;
-	}
-
 
 	const checkAndSubmit = async () => {
 		if (content === "") {
@@ -72,68 +62,61 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
 			// form success!
 			let body = {
 				"reporterId" : userId,
-				"reporterFirstName" : firstName,
-				"reporterLastName" : lastName,
+				"reporterName" : profileName,
 				"content" : content, 
 				"reporteeId" : params.id,
-				"reporteeFirstName" : reporteeFirstName,
-				"reporteeLastName" : reporteeLastName,
+				"reporteeName" : reporteeName,
 			}
 			await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/reports/`, body);
-			alert('Report submitted successfully!')
+			alert('Report submitted.')
 			router.replace('/profiles');
 		}
 	}
 
+	if (loading) {
+		return <Loader/>;
+	}
 
   return <>
-    <NavBar />
-		<div className="flex flex-col justify-center items-center my-6 mx-24">
+    <NavBar profile={profileData}/>
+		<div className="flex flex-col justify-center items-center mt-24 mb-6 mx-24">
 			<div className="
 				bg-background flex-grow w-full max-w-4xl p-12 rounded-xl
 				shadow-2xl"
 			>
-				<h1 className="text-4xl font-bold">Report a User 😡</h1>
-				<hr/>
-				<h3 className="mt-4 text-2xl font-bold">Personal Information</h3>
+				<h1 className="text-2xl font-bold">Report a User</h1>
 				<hr/>
 				<div className="flex flex-row flex-wrap gap-x-8 gap-y-4 mt-4">
 					<div className="flex flex-col flex-grow min-w-60">
-						<Label htmlFor="firstName">First Name</Label>
+						<Label htmlFor="reporterName">Your Username</Label>
 						<Input
-                            disabled
-							id="firstName"
-							placeholder="First Name"
-							className={ `mt-1 ${ firstName.length === 0 && refilling
-								? "outline outline-red-500"
-								: ''
-							}` }
-							defaultValue={ firstName }
-							onChange={ (event) => setFirstName(event.target.value) } 
+              disabled
+							id="reporterName"
+							value={ profileName }
 						/>
 					</div>
 					<div className="flex flex-col flex-grow min-w-60">
-						<Label htmlFor="lastName">Last Name</Label>
+						<Label htmlFor="reporteeName">Reporting</Label>
 						<Input
-                            disabled
-							id="lastName"
-							placeholder="Last Name"
-							className={ `mt-1 ${ lastName.length === 0 && refilling
-								? "outline outline-red-500"
-								: ''
-							}` }
-							defaultValue={ lastName }
-							onChange={ (event) => setLastName(event.target.value) }
+              disabled
+							id="reporteeName"
+							value={ reporteeName }
 						/>
 					</div>
 				</div>
-				<Label htmlFor="content" className="inline-block mt-4">Content</Label>
+				<Label htmlFor="content" className="inline-block mt-4">Content*</Label>
 				<Textarea
 					className="resize-none"
 					defaultValue={ content }
 					onChange={ (event) => setContent(event.target.value) }
 				/>
-				<Button className="mt-8" onClick={ checkAndSubmit }>Finish</Button>
+				<Button
+					className="mt-8"
+					onClick={ checkAndSubmit }
+					disabled={ content.length == 0}
+				>
+					Finish
+				</Button>
 			</div>
 		</div>
 	</>;
