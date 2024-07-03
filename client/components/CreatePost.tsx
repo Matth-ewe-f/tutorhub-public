@@ -226,10 +226,10 @@ const CreatePost : FC<createPostProps> =
 
   return <>
     <div 
-      className="bg-background flex-grow w-full max-w-4xl p-12 rounded-xl
-      shadow-2xl"
+      className="bg-background flex-grow w-full max-w-4xl p-12 md:rounded-xl
+      md:shadow-2xl"
     >
-      <div className="flex items-center">
+      <div className="flex flex-wrap items-center">
         <Label className="mr-4 text-lg font-bold">
           I would like to tutor a:
         </Label>
@@ -272,8 +272,8 @@ const CreatePost : FC<createPostProps> =
         </RadioGroup>
       </div>
       <hr/>
-      <div className="mt-4 flex gap-x-8">
-        <div className="relative flex flex-col flex-grow basis-1">
+      <div className="mt-4 flex flex-wrap gap-x-8 gap-y-4">
+        <div className="relative flex flex-col flex-grow basis-1 min-w-60">
           <Label htmlFor="title">
             { postType === "course" ?
               "Course Title*"
@@ -298,7 +298,7 @@ const CreatePost : FC<createPostProps> =
           { !editing ? getCourseDropdown() : '' }
         </div>
         { postType === "course" ?
-          <div className="relative flex flex-col flex-grow basis-1 z-10">
+          <div className="relative flex flex-col flex-grow basis-1 z-10 min-w-60">
             <Label htmlFor="number">Course Number</Label>
             <Input
               id="number"
@@ -320,8 +320,11 @@ const CreatePost : FC<createPostProps> =
           <></>
         }
       </div>
-      <div className="mt-4 flex items-end gap-x-8">
-        <div className="flex flex-grow basis-1 items-center">
+      <div
+        className={`mt-4 flex items-end gap-x-8 gap-y-4
+        ${postType === "course" ? "flex-wrap-reverse" : "flex-wrap"}`}
+      >
+        <div className="flex flex-col flex-grow basis-1 min-w-60">
           <Label 
             htmlFor="price"
             className="whitespace-nowrap mr-2"
@@ -330,12 +333,12 @@ const CreatePost : FC<createPostProps> =
           </Label>
           <Input
             id="price"
-            className="flex-grow"
+            className="flex-grow-0 mt-1 w-24"
             value={price}
             onChange={(event) => inputPrice(event.target.value)}
           />
         </div>
-        <div className="flex flex-col flex-grow basis-1">
+        <div className="flex flex-col flex-grow basis-1 min-w-60">
           { postType === "course" ? 
             <>
               <div className="flex flex-col flex-grow basis-1">
@@ -349,14 +352,14 @@ const CreatePost : FC<createPostProps> =
               </div>
             </>
           :
-            <div className="flex items-baseline gap-x-1">
+            <div className="flex flex-col items-baseline">
               <Label htmlFor="picture">Image:</Label>
               <Input
                 id="picture"
                 type="file"
                 onChange={ setPhotoFile }
                 accept="image/png, image/gif, image/jpeg"
-                className="cursor-pointer"
+                className="cursor-pointer mt-1"
               />
             </div>
           }
@@ -364,8 +367,8 @@ const CreatePost : FC<createPostProps> =
       </div>
       { postType === "course" ?
         <>
-          <div className="mt-4 flex gap-x-8">
-            <div className="flex flex-col flex-grow basis-1">
+          <div className="mt-4 flex flex-wrap gap-x-8 gap-y-4">
+            <div className="flex flex-col flex-grow basis-1 min-w-60">
               <Label htmlFor="semester">Semester Taken</Label>
               <Input
                 id="semester"
@@ -375,7 +378,7 @@ const CreatePost : FC<createPostProps> =
                 onChange={ (event) => setSemester(event.target.value) }
               />
             </div>
-            <div className="flex flex-col flex-grow basis-1">
+            <div className="flex flex-col flex-grow basis-1 min-w-60">
               <Label htmlFor="grade">Grade Recieved</Label>
               <Input
                 id="grade"
@@ -386,8 +389,8 @@ const CreatePost : FC<createPostProps> =
               />
             </div>
           </div>
-          <div className="mt-4 flex gap-x-8">
-            <div className="flex flex-col">
+          <div className="mt-4 flex flex-wrap gap-x-8 gap-y-4">
+            <div className="flex flex-col min-w-60">
               <Label className="inline-block">
                 Did you take this class at JHU?
               </Label>
@@ -418,7 +421,7 @@ const CreatePost : FC<createPostProps> =
               </RadioGroup>
             </div>
               { atJHU === "Yes" ? 
-                <div className="flex flex-col flex-grow">
+                <div className="flex flex-col flex-grow min-w-60">
                   <Label htmlFor="professor">
                     Who was your professor?
                   </Label>
@@ -431,7 +434,7 @@ const CreatePost : FC<createPostProps> =
                   />
                 </div>
               :
-                <div className="flex flex-col flex-grow">
+                <div className="flex flex-col flex-grow min-w-60">
                   <Label htmlFor="schoolName">
                     If you took it at another school, where?
                   </Label>
@@ -448,7 +451,8 @@ const CreatePost : FC<createPostProps> =
         </>
       :
         <>
-          <div className="mt-4 flex gap-x-8">
+          <Label className="inline-block mt-4">Tags</Label>
+          <div className="flex gap-x-8">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="shadow-sm">
@@ -469,7 +473,7 @@ const CreatePost : FC<createPostProps> =
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
-              <div className="flex gap-x-2 items-center">
+              <div className="flex flex-wrap gap-2 items-center">
                 { tags.map((tag) => {
                   return (
                     <div 

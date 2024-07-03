@@ -141,7 +141,7 @@ const Page : FC = () => {
   }
 
   return <>
-    <div className="flex flex-col items-center justify-center mx-24 my-24">
+    <div className="flex flex-col items-center justify-center md:mx-24 my-24">
       <CreatePost
         sisCourses={sisCourses}
         postType={postType}
