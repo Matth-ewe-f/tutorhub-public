@@ -72,11 +72,9 @@ type Profile = {
 type report = {
   _id: string;
   content: string,
-  reporteeFirstName: string,
-  reporteeLastName: string,
+  reporteeName: string,
   reporteeId: string,
-  reporterFirstName: string,
-  reporterLastName: string,
+  reporterName: string,
   reporterId: string,
   resolved: boolean
 }
