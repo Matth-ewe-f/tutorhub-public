@@ -80,7 +80,7 @@ const Page : FC = () => {
   return (
     <>
       <NavBar profile={profileData}/>
-      <div className="flex flex-col md:flex-row md:justify-center min-h-96 mx-4">
+      <div className="flex flex-col md:flex-row md:justify-center min-h-96 mx-4 mt-16">
         <div 
           className="mt-4 md:mt-12 md:pr-6 md:mr-12 pt-4 min-w-56
           md:border-r-2 border-black"

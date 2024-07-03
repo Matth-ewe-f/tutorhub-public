@@ -214,7 +214,7 @@ const Page : FC = (props: any) => {
       <Navbar profile={profileData}/>
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center
-       bg-blue-300 pt-8 pb-6 md:py-12 px-6 md:px-16"
+       bg-blue-300 pt-24 pb-6 md:pt-28 md:pb-12 px-6 md:px-16"
        >
         <div className="hidden md:block flex-1 max-w-xl">
           <h1 className="text-2xl font-extrabold font-sans uppercase text-black">

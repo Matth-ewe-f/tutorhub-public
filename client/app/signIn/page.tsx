@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import ComboBox from "@/components/ComboBox";
+import Loader from "@/components/Loader";
 
 const Page : FC = () => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -23,8 +24,13 @@ const Page : FC = () => {
 	const [newWarnText, setNewWarnText] = useState("");
 	const [existingWarnText, setExistingWarnText] = useState("");
 	const [allDepartments, setAllDepartments] = useState<string[]>([]);
+	const [loading, setLoading] = useState(true);
 
 	const loadDepartments = async () => {
+		if (cookies.get("tutorhub-public-username") !== undefined) {
+			router.replace("/");
+			return;
+		}
 		const response = await axios.get(`${api}/courses/all`);
 		const courses : sisCourse[] = response.data.courses;
 		const departmentSet = new Set<string>();
@@ -36,6 +42,7 @@ const Page : FC = () => {
 		let departmentArray = Array.from(departmentSet);
 		departmentArray.sort();
 		setAllDepartments(departmentArray);
+		setLoading(false);
 	}
 
 	const changeLoginType = (newType : string) => {
@@ -102,6 +109,10 @@ const Page : FC = () => {
 	const loginAsGuest = () => {
 		cookies.set("tutorhub-public-username", username);
 		router.replace("/browse");
+	}
+
+	if (loading) {
+		return <Loader/>
 	}
 
   return (

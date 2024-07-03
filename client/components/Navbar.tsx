@@ -23,22 +23,20 @@ type navLink = {
 
 const NavBar: FC<{profile: Profile}> = (props) => {
   const cookies = new Cookies(null, {path: "/"});
-  const [isAdmin, setIsAdmin] = useState(false);
   const [imgUrl, setImgUrl] = useState("/defaultimg.jpeg");
   
   const signOut = () => {
     cookies.remove("tutorhub-public-username");
   }
 
-  // could conditionally include reports page as well
   const links : navLink[] = [
     { text: "Browse Posts", href: "browse" },
     { text: "Make a Post", href: "createPost" },
     { text: "Search Users", href: "profiles" },
   ];
 
-  return (
-    <nav className="relative flex justify-between items-center px-4 py-3 bg-white shadow-md">
+  return <>
+    <nav className="fixed top-0 z-50 w-full flex justify-between items-center px-4 py-3 bg-white shadow-md">
       <div className="hidden md:flex items-center">
         <span className="text-xl font-bold mr-4 cursor-default">TUTORHUB</span>
         <div className='w-[1px] h-8 bg-blue-300'></div>
@@ -100,7 +98,7 @@ const NavBar: FC<{profile: Profile}> = (props) => {
         </DropdownMenu>
       </div>
     </nav>
-  );
+  </>;
 };
 
 export default NavBar;
