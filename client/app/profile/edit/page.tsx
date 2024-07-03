@@ -1,6 +1,5 @@
 "use client";
 import React, { FC, useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
 import "../../../styles/global.css";
 import NavBar from "../../../components/Navbar";
 
@@ -12,15 +11,15 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from "universal-cookie";
+import Loader from "@/components/Loader";
 
 const Page : FC = () => {
-	const { isLoaded, isSignedIn, user } = useUser();
 	const router = useRouter();
+	const cookies = new Cookies(null, {path: "/"});
   const BACKEND_URL : string = process.env.NEXT_PUBLIC_BACKEND_URL;
 	const [allDepartments, setAllDepartments] = useState<string[]>([]);
-
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
+	const [username, setUsername] = useState("");
 	const [about, setAbout] = useState("");
 	const [department, setDepartment] = useState("");
 	const [year, setYear] = useState(2024);
@@ -28,24 +27,24 @@ const Page : FC = () => {
 	const [affliiateType, setAffiliateType] = useState("student");
   const [userId, setUserId] = useState("");
 	const [photoFile, setPhotoFile] = useState<File>(null);
-
   const [profileData, setProfileData] = useState(null);
+
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return;
       try {
-        const response = await axios.get(`${BACKEND_URL}/profiles/getByEmail/${user.primaryEmailAddress.toString()}`);
+				const username = cookies.get("tutorhub-public-username");
+        const response = await axios.get(`${BACKEND_URL}/profiles/getByUsername/${username}`);
 				if (response.data.data.length === 0) {
-					router.replace('/createAccount');
+					router.replace('/signIn');
+					return;
 				}
         setProfileData(response.data);
       } catch (error) {
         console.error("Failed to fetch profile:", error);
       }
     };
-
     fetchProfile();
-  }, [user, BACKEND_URL]);
+  }, []);
 
 	const loadDepartments = async () => {
 		const response = await axios.get(`${BACKEND_URL}/courses/all`);
@@ -65,8 +64,7 @@ const Page : FC = () => {
 
   useEffect(() => {
     if (profileData) {
-      setFirstName(profileData.data[0].firstName);
-      setLastName(profileData.data[0].lastName);
+      setUsername(profileData.data[0].username);
       setAbout(profileData.data[0].description);
       setDepartment(profileData.data[0].department);
 			if (profileData.data[0].graduationYear) {
@@ -77,8 +75,8 @@ const Page : FC = () => {
     }
   }, [profileData]);
 
-	if (!isLoaded || !isSignedIn) {
-		return <></>;
+	if (profileData === null) {
+		return <Loader/>;
 	}
 
 	const checkAndSetYear = (input : string) => {
@@ -98,16 +96,14 @@ const Page : FC = () => {
   }
 
 	const checkAndSubmit = async () => {
-		if (firstName === "" || lastName === "" || department === "") {
+		if (username === "" || department === "") {
 			// missing field!
 			alert("Please fill out all required fields")
 			setRefilling(true);
 		} else {
 			// form success!
 			let body = {
-				"firstName" : firstName,
-				"lastName" : lastName,
-				"email" : user.primaryEmailAddress.toString(),
+				"username" : username,
 				"affiliation" : affliiateType,
 				"department" : department,
 				"description" : about,
@@ -121,16 +117,13 @@ const Page : FC = () => {
 				formData.append("profilePicture", photoFile);
 				const endpoint = `${BACKEND_URL}/profilePics/upload/${userId}`;
 				await axios.post(endpoint, formData);
-				// clerk profile image
-				await user.setProfileImage({file: photoFile});
 			}
 			router.replace('/profile');
 		}
 	}
 
   return <>
-    <NavBar />
-		<div className="flex flex-col justify-center items-center my-6 md:mx-24">
+		<div className="flex flex-col justify-center items-center my-12 md:mx-24">
 			<div className="
 				bg-background flex-grow w-full max-w-4xl p-12 md:rounded-xl
 				md:shadow-2xl"
@@ -140,44 +133,16 @@ const Page : FC = () => {
 				<h3 className="mt-4 text-2xl font-bold">Personal Information</h3>
 				<hr/>
 				<div className="flex flex-row flex-wrap gap-x-8 gap-y-4 mt-4">
-					<div className="flex flex-col flex-grow min-w-60">
-						<Label htmlFor="firstName">First Name*</Label>
+					<div className="flex flex-col basis-4 flex-grow min-w-60">
+						<Label htmlFor="username">Username</Label>
 						<Input 
-							id="firstName"
-							placeholder="First Name"
-							className={ `mt-1 ${ firstName.length === 0 && refilling
-								? "outline outline-red-500"
-								: ''
-							}` }
-							defaultValue={ firstName }
-							onChange={ (event) => setFirstName(event.target.value) } 
-						/>
-					</div>
-					<div className="flex flex-col flex-grow min-w-60">
-						<Label htmlFor="lastName">Last Name*</Label>
-						<Input
-							id="lastName"
-							placeholder="Last Name"
-							className={ `mt-1 ${ lastName.length === 0 && refilling
-								? "outline outline-red-500"
-								: ''
-							}` }
-							defaultValue={ lastName }
-							onChange={ (event) => setLastName(event.target.value) }
-						/>
-					</div>
-				</div>
-				<div className="flex flex-row flex-wrap gap-x-8 gap-y-4 mt-4">
-					<div className="flex flex-col flex-grow basis-4 min-w-60">
-						<Label htmlFor="email">Email*</Label>
-						<Input 
+							id="username"
+							value={username}
+							className="mt-1"
 							disabled
-							id="email"
-							className="mt-1 bg-gray-300"
-							defaultValue={ user.primaryEmailAddress.toString() }
 						/>
 					</div>
-					<div className="flex flex-col flex-grow basis-4 min-w-60">
+					<div className="flex flex-col basis-4 flex-grow min-w-60">
 						<Label htmlFor="picture">Profile Picture</Label>
 						<Input
 							id="picture"
