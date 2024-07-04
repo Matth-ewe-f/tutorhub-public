@@ -68,9 +68,10 @@ const NavBar: FC<{profile: Profile}> = (props) => {
               }
             >
               {linkShouldDisable(link) &&
-                <div className='hidden group-hover:flex absolute top-10 left-0 right-0 justify-center'>
+                <div className='hidden group-hover:flex absolute top-8 left-0 right-0 justify-center'>
                   <span className="inline-block px-2 py-1 bg-gray-700
-                  rounded-md text-sm text-gray-200 font-bold text-center">
+                  outline-black outline rounded-md text-sm text-gray-200
+                  font-bold text-center">
                     Disabled for <br/> {profile.username}s
                   </span>
                 </div>
@@ -86,15 +87,36 @@ const NavBar: FC<{profile: Profile}> = (props) => {
           <DropdownMenuTrigger>
             <Menu/>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className='md:hidden overflow-visible'>
             { links.map((link) => {
-              return <>
-                <DropdownMenuItem key={`${link.href}-mobile`} className='cursor-pointer'>
-                  <Link href={`/${link.href}`} className="text-base">
+              return <div className='relative group'>
+                <DropdownMenuItem 
+                  key={`${link.href}-mobile`}
+                  className='cursor-pointer'
+                  disabled={linkShouldDisable(link)}
+                >
+                  <Link 
+                    href={`/${link.href}`}
+                    className={`text-base ` +
+                    (linkShouldDisable(link) 
+                      ? `line-through active:pointer-events-none`
+                      : ``
+                    )}
+                  >
                     {link.text}
                   </Link>
                 </DropdownMenuItem>
-              </>
+                {linkShouldDisable(link) &&
+                  <div className='z-50 hidden group-hover:block absolute
+                  left-36 top-[3.1rem] -mt-14 w-28'>
+                    <span className="inline-block px-2 py-1 bg-gray-700
+                    outline-white outline rounded-md text-sm text-gray-200
+                    font-bold text-center">
+                      Disabled for <br/> {profile.username}s
+                    </span>
+                  </div>
+                }
+              </div>
             })}
           </DropdownMenuContent>
         </DropdownMenu>

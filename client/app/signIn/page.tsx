@@ -107,7 +107,7 @@ const Page : FC = () => {
 	}
 
 	const loginAsGuest = () => {
-		cookies.set("tutorhub-public-username", username);
+		cookies.set("tutorhub-public-username", "Guest");
 		router.replace("/browse");
 	}
 

@@ -32,7 +32,7 @@ const Page : FC = (props: any) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [bestPosts, setBestPosts] = useState<Post[]>([]);
   const [reviewAvg, setReviewAvg] = useState(5);
-  const [profileData, setProfileData] = useState<Profile>(null);
+  const [profile, setProfile] = useState<Profile>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [imgUrl, setImgUrl] = useState("../defaultimg.jpeg");
@@ -50,7 +50,7 @@ const Page : FC = (props: any) => {
       if (userInfo.data.data.length === 0) {
         router.replace('/signIn');
       }
-      setProfileData(userInfo.data.data[0]);
+      setProfile(userInfo.data.data[0]);
       const posts = await axios.get(`${api}/allPosts/findAllByUserId/${userInfo.data.data[0]._id}`);
       if (posts.data.length !== 0) {
         setPosts(posts.data);
@@ -116,7 +116,7 @@ const Page : FC = (props: any) => {
 
   useEffect(() => { setReviews(sortReviews(reviews)) }, [reviewSort]);
 
-  if (loading || !profileData) {
+  if (loading || !profile) {
     return (
       <>
         <Loader />
@@ -174,10 +174,10 @@ const Page : FC = (props: any) => {
         </div>
       )
     } else if (activeSection === "Analytics") {
-      if (!profileData || !profileData._id) {
+      if (!profile || !profile._id) {
         return <></>
       } 
-      return <ProfileAnalytics profileId={profileData._id} bestPosts={bestPosts}/>
+      return <ProfileAnalytics profileId={profile._id} bestPosts={bestPosts}/>
     } else if (activeSection === "Schedule") {
         return (
           <div className="flex flex-col justify-center max-w-3xl w-full">
@@ -202,26 +202,29 @@ const Page : FC = (props: any) => {
   }
 
   const getBiography = () => {
-    if (profileData.description) {
-      return profileData.description;
+    if (profile.description) {
+      return profile.description;
     } else {
-      return `${profileData.username} hasn't entered a biography yet, but they're definitely a cool person who you should sign up for tutoring sessions with!`
+      return `${profile.username} hasn't entered a biography yet, but they're definitely a cool person who you should sign up for tutoring sessions with!`
     }
   }
 
   return (
     <>
-      <Navbar profile={profileData}/>
+      <Navbar profile={profile}/>
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center
        bg-blue-300 pt-24 pb-6 md:pt-28 md:pb-12 px-6 md:px-16"
        >
         <div className="hidden md:block flex-1 max-w-xl">
           <h1 className="text-2xl font-extrabold font-sans uppercase text-black">
-            {profileData.username} - {profileData.department}
-            {profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}
+            {profile.username}
+            {profile.username !== "Admin" && profile.username != "Guest" &&
+              ` - ${profile.department} ` +
+              profile.graduationYear ? `, ${profile.graduationYear}` : ''
+            }
           </h1>
-          <p className="font-light text-base text-justify">{getBiography()}</p>
+          <p className="mr-8 font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="block md:hidden flex-1 max-w-xl">
           <div className="flex justify-center items-center gap-x-1 mb-2">
@@ -232,26 +235,44 @@ const Page : FC = (props: any) => {
             />
             <div>
               <h1 className="my-0 text-2xl text-center font-extrabold font-sans uppercase text-black">
-                {profileData.username}
+                {profile.username}
               </h1>
-              <p className="text-s text-center uppercase font-light -mt-1">
-                {`${profileData.department}${profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}`}
-              </p>
+              { profile.username !== "Admin" && profile.username != "Guest" &&
+                <p className="text-s text-center uppercase font-light -mt-1">
+                  {`${profile.department}${profile.graduationYear ? `, ${profile.graduationYear}` : ''}`}
+                </p>
+              }
             </div>
           </div>
           <p className="font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="flex-none flex flex-col items-center">
-          <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profileData.username}`} />
+          <img className="hidden md:block w-48 h-48 object-cover rounded-md" src={imgUrl} alt={`${profile.username}`} />
           { reviews.length > 0 ?
             <RatingStars rating={reviewAvg} starSize={26} numReviews={reviews.length} className="mt-2"/>
           :
             <></>
           }
           <div className="flex mt-2 space-x-4">
-            <Link href="/profile/edit" passHref>
-              <button className="bg-custom-blue hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-md">
+            <Link href="/profile/edit" passHref className="relative">
+              <button 
+                className={`bg-custom-blue text-white ` +
+                `font-bold py-2 px-4 rounded-md group ` +
+                (profile.username === "Admin" || profile.username === "Guest"
+                  ? `line-through cursor-default active:pointer-events-none`
+                  : `hover:bg-blue-900`
+                )}
+              >
                 Edit Your Profile
+                {(profile.username === "Admin" || profile.username === "Guest") &&
+                  <div className='hidden group-hover:flex absolute top-8 left-0 right-0 justify-center'>
+                    <span className="z-50 inline-block px-2 py-1 bg-gray-700
+                    border-white border rounded-md text-sm text-gray-200
+                    font-bold text-center">
+                      Disabled for <br/> {profile.username}s
+                    </span>
+                  </div>
+                }
               </button>
             </Link>
           </div>
