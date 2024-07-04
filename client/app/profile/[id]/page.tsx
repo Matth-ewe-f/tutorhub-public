@@ -3,12 +3,10 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import "@/styles/global.css";
 import axios from "axios";
 import Navbar from "@/components/Navbar"
-import Link from 'next/link';
 import Loader from "@/components/Loader";
 import PostCard from "@/components/PostCard";
 import RatingStars from "@/components/RatingStars";
 import ReviewCard from "@/components/ReviewCard";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
@@ -84,11 +82,22 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   }, []);
 
   const fetchData = async () => {
+    let userInfo : {data: {data: Profile}};
     try {
-      const userInfo = await axios.get(`${api}/profiles/${params.id}`);
-      setProfile(userInfo.data.data);
-
-      const posts = await axios.get(`${api}/allPosts/findAllByUserId/${userInfo.data.data._id}`);
+      userInfo = await axios.get(`${api}/profiles/${params.id}`);
+    } catch (err) {
+      router.replace("/profiles");
+      return;
+    }
+    setProfile(userInfo.data.data);
+    if (userInfo.data.data.profilePicKey) {
+      const key = userInfo.data.data.profilePicKey;
+      const url = `https://tutorhub-public.s3.amazonaws.com/${key}`;
+      setImgUrl(url);
+    }
+    let posts : {data: Post[]};
+    try {
+      posts = await axios.get(`${api}/allPosts/findAllByUserId/${userInfo.data.data._id}`);
       if (posts.data.length !== 0) {
         setPosts(posts.data);
         let reviews : Review[] = [];
@@ -103,24 +112,9 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
         reviews = sortReviews(reviews);
         setReviews(reviews);
       }
-      if (userInfo.data.data.profilePicKey) {
-        const key = userInfo.data.data.profilePicKey;
-        const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`;
-        setImgUrl(url);
-        // const picUrl = await axios.get(`${api}/profilePics/get/${userInfo.data.data.profilePicKey}`);
-        // setImgUrl(picUrl.data.imageUrl);
-      }
-      const profileId = userInfo.data.data._id;
-      const reviewEndpoint = `${api}/postReviews/getByProfileId/${profileId}`;
-      const reviewResponse = await axios.get(reviewEndpoint);
-    } catch (error) {
-      console.error('Error fetching posts', error);
-    } finally {
-      setLoading(false);
-    };
-  };
-
-  const getVisitor = async () => {
+    } catch (err) {
+      console.error(err);
+    }
     try {
       const username = cookies.get("tutorhub-public-username");
       const url = `${api}/profiles/getByUsername/${username}`;
@@ -134,12 +128,17 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
         setVisitorId(id);
         if (id === params.id) {
           router.replace('profile');
+          return;
         }
       }
     } catch (error) {
       console.error(error);
     }
-  }
+    // const profileId = userInfo.data.data._id;
+    // const reviewEndpoint = `${api}/postReviews/getByProfileId/${profileId}`;
+    // const reviewResponse = await axios.get(reviewEndpoint);
+    setLoading(false);
+  };
 
   const updateProfileViewsAsync = async () => {
     if (visitorIdRef.current === '' || visitorId === params.id) {
@@ -172,8 +171,6 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   const handleClickReportUser = () => {
     router.push(`/profile/report/${params.id}`);
   }
-
-  useEffect(() => { getVisitor() }, []);
 
   useEffect(() => {
     fetchData();
