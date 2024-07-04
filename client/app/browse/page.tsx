@@ -176,9 +176,9 @@ const Page: FC = () => {
 
 	const getFilterJSX = () => {
 		return (
-			<Accordion type="single" collapsible className="w-full">
+			<Accordion type="multiple" className="w-full">
 				<AccordionItem value="item-1">
-					<AccordionTrigger>By Type</AccordionTrigger>
+					<AccordionTrigger className="font-light">By Type</AccordionTrigger>
 					<AccordionContent>
 						<div className="pb-1 ml-2">
 							<div className="flex items-center space-x-2">
@@ -205,7 +205,7 @@ const Page: FC = () => {
 					</AccordionContent>
 				</AccordionItem>
 				<AccordionItem value="item-2">
-					<AccordionTrigger>By Price</AccordionTrigger>
+					<AccordionTrigger className="font-light">By Price</AccordionTrigger>
 					<AccordionContent>
 						<div className="pb-1 ml-2">
 							<div className="flex items-center space-x-2">
@@ -234,7 +234,7 @@ const Page: FC = () => {
 				{/** Tags */}
 				{!typeFilters.courses &&
 					<AccordionItem value="item-3">
-						<AccordionTrigger>By Tag</AccordionTrigger>
+						<AccordionTrigger className="font-light">By Tag</AccordionTrigger>
 						<AccordionContent>
 							<div className="pb-1 ml-2">
 								<div className="flex items-center space-x-2">
@@ -296,7 +296,7 @@ const Page: FC = () => {
 				}
 				{/** schedule */}
 				<AccordionItem value="item-4">
-					<AccordionTrigger>By Schedule</AccordionTrigger>
+					<AccordionTrigger className="font-light">By Schedule</AccordionTrigger>
 					<AccordionContent>
 						<div className="ml-2 pb-1">
 							<div className="flex items-center space-x-2">
@@ -323,36 +323,39 @@ const Page: FC = () => {
 	return <>
 		<NavBar profile={profile} />
 		<div className="flex flex-col lg:flex-row min-h-screen">
-			<div className="flex flex-row flex-wrap min-h-24 lg:flex-col lg:min-w-80 lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
-				<div className="input-container mx-6 my-3 lg:my-6 flex-grow-[2] lg:flex-grow-0">
-					<input 
-						type="text"
-						name="text"
-						className="min-w-64 w-full input placeholder-[#406a90]"
-						placeholder="Name or Course Number"
-						onChange={(e) => searchItems(e.target.value)}
-					/>
-					<label className="label">Search</label>
-					<div className="top-line"></div>
-					<div className="under-line"></div>
-				</div>
-				<div className="lg:hidden mx-4 flex-grow flex justify-center">
-					<Accordion type="single" collapsible className="w-48 [&_button:not([role=checkbox])]:py-3">
-						<AccordionItem className="border-none" value="item-1">
-							<AccordionTrigger className="text-xl font-bold uppercase">
-								Filter Posts
-							</AccordionTrigger>
-							<AccordionContent>
-								{ getFilterJSX() }
-							</AccordionContent>
-						</AccordionItem>
-					</Accordion>
-				</div>
-				<div className="hidden lg:block mx-4">
-					<h1 className="text-2xl font-bold uppercase">
-						filter posts
-					</h1>
-					{ getFilterJSX() }
+			<div className="flex flex-col flex-wrap min-h-24 lg:min-w-80 lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
+				<h3 className="mt-2 text-xl font-bold uppercase">Search Posts</h3>
+				<div className="w-full flex flex-row flex-wrap lg:flex-col items-center justify-center">
+					<div className="max-w-md input-container mx-6 mt-3 mb-3 lg:mb-6 flex-grow lg:flex-grow-0">
+						<input 
+							type="text"
+							name="text"
+							className="min-w-64 w-full input placeholder-[#406a90]"
+							placeholder="Name or Course Number"
+							onChange={(e) => searchItems(e.target.value)}
+						/>
+						<label className="label">Search</label>
+						<div className="top-line"></div>
+						<div className="under-line"></div>
+					</div>
+					<div className="lg:hidden mx-4 flex justify-center">
+						<Accordion type="single" collapsible className="w-40 [&_button:not([role=checkbox])]:py-3">
+							<AccordionItem className="border-none" value="item-1">
+								<AccordionTrigger className="text-xl font-light">
+									Filter Posts
+								</AccordionTrigger>
+								<AccordionContent>
+									{ getFilterJSX() }
+								</AccordionContent>
+							</AccordionItem>
+						</Accordion>
+					</div>
+					<div className="hidden lg:block min-w-40 mx-4">
+						<h1 className="text-xl font-light text-center">
+							Filter Posts
+						</h1>
+						{ getFilterJSX() }
+					</div>
 				</div>
 			</div>
 			<div className="w-full lg:w-3/4 py-4 md:pt-24">
