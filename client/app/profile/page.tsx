@@ -84,7 +84,7 @@ const Page : FC = (props: any) => {
       }
       if (userInfo.data.data[0].profilePicKey) {
         const key = userInfo.data.data[0].profilePicKey;
-        const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`
+        const url = `https://tutorhub-public.s3.amazonaws.com/${key}`
         setImgUrl(url);
       }
     } catch (error) {

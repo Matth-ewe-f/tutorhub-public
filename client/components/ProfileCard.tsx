@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React, { FC, useEffect, useState } from 'react';
 
-const PostCard: FC<{profile: Profile}> = ({ profile }) => {
+const PostCard: FC<{profile: Profile, self?: boolean}> = ({ profile, self }) => {
   const [img, setImg] = useState("/defaultimg.jpeg");
   const [titleUnderline, setTitleUnderline] = useState(false);
   const router = useRouter();
@@ -12,7 +12,7 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
   const loadImage = async () => {
     if (profile.profilePicKey) {
       const key = profile.profilePicKey;
-      const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`
+      const url = `https://tutorhub-public.s3.amazonaws.com/${key}`
       setImg(url);
     }
   }
@@ -64,7 +64,7 @@ const PostCard: FC<{profile: Profile}> = ({ profile }) => {
             className={`font-bold text-xl 
             ${titleUnderline ? 'underline' : ''}`}
           >
-            {profile.username}
+            {profile.username} {self ? "(You)" : ""}
           </div>
           <p className="text-gray-600 text-sm min-h-5">
             { formatAffiliation(profile.affiliation) }

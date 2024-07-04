@@ -78,15 +78,21 @@ const Page : FC = () => {
 				<div className="container mx-auto px-6">
 					<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             { searchInput.length > 1 ?
-              filteredProfiles.map((profiles) => (
-                <div className="w-full" key={profiles._id}>
-                  <ProfileCard profile={profiles}/>
+              filteredProfiles.map((profile) => (
+                <div className="w-full" key={profile._id}>
+                  <ProfileCard 
+                    profile={profile}
+                    self={profile.username == visitorProfile.username}
+                  />
                 </div>
               ))
             :
-              profiles.map((profiles) => (
-                <div className="w-full" key={profiles._id}>
-                  <ProfileCard profile={profiles}/>
+              profiles.map((profile) => (
+                <div className="w-full" key={profile._id}>
+                <ProfileCard 
+                  profile={profile}
+                  self={profile.username == visitorProfile.username}
+                />
                 </div>
               ))
             }

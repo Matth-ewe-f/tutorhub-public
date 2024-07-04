@@ -22,8 +22,16 @@ type navLink = {
 }
 
 const NavBar: FC<{profile: Profile}> = (props) => {
+  const profile = props.profile;
   const cookies = new Cookies(null, {path: "/"});
-  const [imgUrl, setImgUrl] = useState("/defaultimg.jpeg");
+
+  const getImgUrl = () => {
+    if (profile && profile.profilePicKey != null) {
+      return `https://tutorhub-public.s3.amazonaws.com/${profile.profilePicKey}`;
+    } else {
+      return "/defaultimg.jpeg";
+    }
+  }
   
   const signOut = () => {
     cookies.remove("tutorhub-public-username");
@@ -76,8 +84,8 @@ const NavBar: FC<{profile: Profile}> = (props) => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src={imgUrl} alt="@shadcn" className='object-cover'/>
-              <AvatarFallback>TH</AvatarFallback>
+              <AvatarImage src={getImgUrl()} alt="@shadcn" className='object-cover'/>
+              {/* <AvatarFallback>TH</AvatarFallback> */}
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -87,7 +95,7 @@ const NavBar: FC<{profile: Profile}> = (props) => {
             <DropdownMenuItem className='cursor-pointer text-base'>
               <Link href="/signIn" onClick={signOut}>Sign out</Link>
             </DropdownMenuItem>
-            { props.profile && props.profile.username === "Admin" ?
+            { profile && profile.username === "Admin" ?
               <DropdownMenuItem className='cursor-pointer text-base'>
                 <Link href="/reports">Admin Console</Link>
               </DropdownMenuItem>
