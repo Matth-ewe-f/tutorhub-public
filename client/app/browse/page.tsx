@@ -362,7 +362,7 @@ const Page: FC = () => {
 							<div className="flex justify-center items-center">
 								<PostCard 
 									key={posts._id}
-									className="max-w-96"
+									className="w-full max-w-96"
 									post={posts}
 								/>
 							</div>
