@@ -12,14 +12,13 @@ import ReviewCard from "@/components/ReviewCard";
 import ProfileAnalytics from "@/components/ProfileAnalytics";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import Availability from "@/components/Availability";
 import Cookies from "universal-cookie";
 
 const Page : FC = (props: any) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const cookies = new Cookies(null, {path: "/"});
   const router = useRouter();
-  const sections = ["Posts", "Reviews", "Analytics", "Schedule"];
+  const sections = ["Posts", "Reviews", "Analytics"];
 
   const getDefaultSection = () => {
     let parameter = props.searchParams.section;
@@ -178,12 +177,6 @@ const Page : FC = (props: any) => {
         return <></>
       } 
       return <ProfileAnalytics profileId={profile._id} bestPosts={bestPosts}/>
-    } else if (activeSection === "Schedule") {
-        return (
-          <div className="flex flex-col justify-center max-w-3xl w-full">
-            <Availability />
-          </div>
-        )
     } else {
       if (posts.length === 0) {
         return <h3 className="mt-8 text-xl font-light">You haven't made any posts yet!</h3>

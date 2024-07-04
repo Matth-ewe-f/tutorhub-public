@@ -10,7 +10,6 @@ import ReviewCard from "@/components/ReviewCard";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import CompareAvailability from "@/components/CompareAvailability";
 import Cookies from "universal-cookie";
 
 const Page : FC = ({ params }: { params : { id: string }}) => {
@@ -27,7 +26,6 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   const [onPage, setOnPage] = useState(true);
   const [visitorId, setVisitorId] = useState('');
   const [visitorData, setVisitorData] = useState<Profile>();
-  const [availability, setAvailability] = useState(new Array(336).fill(0));
 
   const reviewSortMethods = [
     "Highest Rating",
@@ -64,22 +62,6 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   }, [reviews])
   
   const router = useRouter();
-
-  const compareAvail = async () => {
-    try {
-      const userInfo = await axios.get(`${api}/profiles/${params.id}`);
-      const profileAvail = userInfo.data.data.availability;
-      const pa = new Array(336).fill(0);
-      profileAvail.forEach(index => pa[index] = 1);
-      setAvailability(pa);
-    } catch (error) {
-      console.error('Failed to fetch availability:', error);
-    }
-  };
-
-  useEffect(() => {
-    compareAvail();
-  }, []);
 
   const fetchData = async () => {
     let userInfo : {data: {data: Profile}};
@@ -260,13 +242,6 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
           </div>
         </div>
       )
-    } else if (activeSection === "Schedule") {
-        return <>
-          <div className="flex flex-col justify-center max-w-3xl w-full">
-            <p className="pl-16 font-bold">{profileData.username}'s Schedule</p>
-            <CompareAvailability availability={availability} />
-          </div>
-        </>
     }
   }
 
@@ -320,64 +295,25 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
         </div>
       </div>
       <div className="w-full bg-blue-300 relative">
-      <div className="hidden md:flex ml-8 items-end">
-          { ["Posts", "Reviews", "Schedule"].map((value, index) => {
-            return (
-              <button 
-                key={`tab-${index}`}
-                className={`text-md w-32 mx-1 py-2 rounded-t-lg font-bold 
-                transition border-black relative -bottom-2 pb-4
-                ${activeSection === value ? 
-                  "bg-pageBg border-t border-l border-r z-20" :
-                  "hover:-translate-y-2 bg-sky-100"}
-                `}
-                disabled={activeSection === value}
-                onClick={ () => setActiveSection(value) }
-              >
-                { value }
-              </button>
-            )
-          }) }
-        </div>
-        <div className="flex md:hidden ml-8 items-end">
-          <button 
-            className="text-md w-32 mx-1 py-2 rounded-t-lg font-bold 
-            transition border-black relative -bottom-2 pb-4
-            bg-pageBg border-t border-l border-r z-20"
-            disabled={true}
-          >
-            { activeSection }
-          </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <p 
-                className="text-md w-32 mx-1 py-2 rounded-t-lg font-bold 
-                transition border-black relative -bottom-2 pb-4 bg-sky-100"
-              >
-                Others
-              </p>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              className='bg-sky-100 rounded-xl px-2 py-1.5 border mt-1'
+      <div className="flex ml-8 items-end">
+        { ["Posts", "Reviews"].map((value, index) => {
+          return (
+            <button 
+              key={`tab-${index}`}
+              className={`text-md w-32 mx-1 py-2 rounded-t-lg font-bold 
+              transition border-black relative -bottom-2 pb-4
+              ${activeSection === value ? 
+                "bg-pageBg border-t border-l border-r z-20" :
+                "hover:-translate-y-2 bg-sky-100"}
+              `}
+              disabled={activeSection === value}
+              onClick={ () => setActiveSection(value) }
             >
-              { ["Posts", "Reviews", "Schedule"]
-                .filter((value) => value !== activeSection).map((value, index) => {
-                return (
-                  <DropdownMenuItem 
-                    className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
-                    rounded-xl overflow-hidden'
-                    key={`tab-dropdown-${index}`}
-                    onClick={ () => setActiveSection(value) }
-                  >
-                    <div className='hover:bg-pageBg px-3 py-1 w-full'>
-                      {value}
-                    </div>
-                  </DropdownMenuItem>
-                )
-              } )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+              { value }
+            </button>
+          )
+        }) }
+      </div>
       <div className="w-full bg-pageBg absolute h-4 top-[50px] z-30"/>
         <div
           className="relative z-10 border-t border-black bg-pageBg md:px-6 py-8

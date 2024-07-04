@@ -303,28 +303,6 @@ const Page: FC = () => {
 						</AccordionContent>
 					</AccordionItem>
 				}
-				{/** schedule */}
-				<AccordionItem value="item-4">
-					<AccordionTrigger className="font-light">By Schedule</AccordionTrigger>
-					<AccordionContent>
-						<div className="ml-2 pb-1">
-							<div className="flex items-center space-x-2">
-								<Checkbox id="availability" checked={availabilityFilter} onCheckedChange={(e) => handleAvailabilityChange()} />
-								<label
-									htmlFor="avail"
-									className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-								>
-									Matching Schedules
-								</label>
-							</div>
-							<span className="inline-block mt-0.5">
-								Set <a href='/profile?section=Schedule' className="underline">
-									your schedule
-								</a>
-							</span>
-						</div>
-					</AccordionContent>
-				</AccordionItem>
 			</Accordion>
 		)
 	}

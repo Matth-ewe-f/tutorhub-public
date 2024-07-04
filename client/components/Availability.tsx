@@ -6,34 +6,38 @@ import Cookies from 'universal-cookie';
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const api = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const TimeSlot = ({ intervalIndex, selectActive, isSelected, onToggle }) => {
+const TimeSlot = ({ intervalIndex, selectActive, isSelected, onToggle, first }) => {
     const borderClass = intervalIndex % 2 !== 0 ? "border-dashed" : "border-solid";
     const backgroundColor = isSelected ? "bg-green-200" : "bg-white";
     return (
       <div
-        className={`border-t border-black h-6 ${borderClass} ${backgroundColor} cursor-pointer`}
+        className={`${!first && "border-t"} border-black h-6 ${borderClass} ${backgroundColor} cursor-pointer`}
         onClick={selectActive ? () => onToggle(intervalIndex) : undefined}
       />
     );
 };
 
-const DayColumn = ({ day, selectActive, selections, onToggle }) => {
+const DayColumn = ({ day, selectActive, selections, onToggle, last }) => {
     const intervals = Array.from({ length: 48 }, (_, index) => index);
     
-    return (
-      <div className="flex flex-col border-y border-l border-black last:border-r">
-        <div className="text-center font-bold">{day}</div>
-        {intervals.map(interval => (
+    return <div className='flex flex-col'>
+      <div className={`text-center font-bold sticky top-0 bg-pageBg
+      border-black border-y border-l ${last && "border-r"}`}>
+        {day}
+      </div>
+      <div className={`flex flex-col border-b border-l border-black ${last && "border-r"}`}>
+        {intervals.map((interval, index) => (
           <TimeSlot
             key={interval}
             intervalIndex={interval + daysOfWeek.indexOf(day) * 48} // Calculate global index based on day and local index
             selectActive={selectActive}
             isSelected={selections[interval + daysOfWeek.indexOf(day) * 48]}
             onToggle={onToggle}
+            first={index == 0}
           />
         ))}
       </div>
-    );
+    </div>;
 };
 
 const WeekGrid = ({ selectActive, selections, onToggle }) => {
@@ -41,7 +45,9 @@ const WeekGrid = ({ selectActive, selections, onToggle }) => {
         <div className="grid grid-cols-8"> 
             <HourLabels />
             {daysOfWeek.map((day, index) => (
-                <DayColumn key={index} day={day} selectActive={selectActive} selections={selections} onToggle={onToggle} />
+              <DayColumn key={index} day={day} selectActive={selectActive}
+              selections={selections} onToggle={onToggle}
+              last={index == daysOfWeek.length - 1}/>
             ))}
         </div>
     );
@@ -124,7 +130,10 @@ const Page = () => {
           </p>
         </div>
       </div>
-      <WeekGrid selectActive={select} selections={selections} onToggle={toggleSelection} />
+      <div className='max-h-[32rem] overflow-y-scroll'>
+        <WeekGrid selectActive={select} selections={selections}
+        onToggle={toggleSelection} />
+      </div>
     </div>
     );
 };
