@@ -81,10 +81,32 @@ const ProfileAnalytics : FC<props> = (props) => {
     }
   }
 
+  const getRandomInt = (max : number) => {
+    // not perfectly random but good enough
+    return Math.round(Math.random() * max);
+  }
+
+  const getRandomTimestamp = (earliest: Date) => {
+    const lowest : number = earliest.getTime();
+    const highest : number = new Date().getTime();
+    return new Date(getRandomInt(highest - lowest) + lowest);
+  }
+
   const getViewsData = async () => {
-    const endpoint = `${api}/profiles/views/${id}`;
-    const response = await axios.get(endpoint);
-    const rawData : view[] = response.data.data.views;
+    // uncomment to use real data
+    // const endpoint = `${api}/profiles/views/${id}`;
+    // const response = await axios.get(endpoint);
+    // const rawData : view[] = response.data.data.views;
+    let rawData : view[] = [];
+    const now = new Date();
+    const sixMonthsAgo = new Date(now.getTime() - (1000 * 60 * 60 * 24 * 180));
+    for (let i = 0;i < 300;i++) {
+      rawData[i] = { 
+        viewerId: "",
+        timestamp: getRandomTimestamp(sixMonthsAgo).toISOString(),
+        durationInSeconds: getRandomInt(40),
+      }
+    }
     setRawViewsData(rawData);
   }
 
@@ -116,10 +138,10 @@ const ProfileAnalytics : FC<props> = (props) => {
     setTimeGraphData(timeData);
   }
 
-  const createOtherCategory = (points : pieGraphPoint[]) => {
+  const createOtherCategory = (points : pieGraphPoint[], bound: number) => {
     let total = 0;
     points.forEach((point) => (total += point.count));
-    const lowerBound = total * 0.02;
+    const lowerBound = total * bound;
     let abovePoints = points.filter((point) => point.count > lowerBound);
     const belowPoints = points.filter((point) => point.count <= lowerBound);
     let otherTotal = 0;
@@ -130,26 +152,62 @@ const ProfileAnalytics : FC<props> = (props) => {
     return abovePoints;
   }
 
+  const getRandomDepartments = () => {
+    let departments = ["Computer Science", "East Asian Studies", "Mathematics", "Physics", "Archeology", "Chemistry", "Biology", "Mechanical Engineering", "Film and Media Studies", "Philosophy", "History", "French", "English", "Civil Engineering", "Biophysics", "Computer Engineering", "Electrical Engineering"]
+    let result : pieGraphPoint[] = [];
+    const bound = getRandomInt(4) + 8;
+    for (let i = 0;i < bound;i++) {
+      const index = getRandomInt(departments.length - 1);
+      result[i] = { _id: departments[index], count: getRandomInt(15) };
+      departments.splice(index, 1);
+    }
+    return result;
+  }
+
+  const getRandomAffiliations = () => {
+    return [
+      { _id: "Student", count: getRandomInt(15)},
+      { _id: "Faculty", count: getRandomInt(15)},
+      { _id: "Other", count: getRandomInt(5)},
+    ]
+  }
+
+  const getRandomYears = () => {
+    const now = new Date().getFullYear();
+    return [
+      { _id: now.toString(), count: getRandomInt(15)},
+      { _id: (now + 1).toString(), count: getRandomInt(15)},
+      { _id: (now + 2).toString(), count: getRandomInt(15)},
+      { _id: (now + 3).toString(), count: getRandomInt(15)},
+    ]
+  }
+
   const getDemographicsData = async () => {
-    const endpoint = `${api}/profiles/demographics/${id}`;
-    const params = { params: { start: getDaysAgo(timeScaleToDays()) }};
-    const response = await axios.get(endpoint, params);
-    const data = response.data;
+    // uncomment to use real data
+    // const endpoint = `${api}/profiles/demographics/${id}`;
+    // const params = { params: { start: getDaysAgo(timeScaleToDays()) }};
+    // const response = await axios.get(endpoint, params);
+    // const data = response.data;
+    let data = {
+      departments: getRandomDepartments(),
+      affiliations: getRandomAffiliations(),
+      graduationYears: getRandomYears(),
+    }
     let majors : pieGraphPoint[] = data.departments;
     majors = majors.map((point) => {
       point._id = capitalize(point._id);
       return point;
     })
-    setMajorData(createOtherCategory(majors));
+    setMajorData(createOtherCategory(majors, 0.08));
     let affiliations : pieGraphPoint[] = data.affiliations;
     affiliations = affiliations.map((point) => {
       point._id = capitalize(point._id);
       return point;
     })
-    setAffiliationData(createOtherCategory(affiliations));
+    setAffiliationData(affiliations);
     let grads : pieGraphPoint[] = data.graduationYears;
     grads = grads.filter((obj) => obj._id );
-    setYearData(createOtherCategory(grads));
+    setYearData(createOtherCategory(grads, 0.02));
   }
 
   useEffect(() => { getViewsData() }, [])
@@ -459,58 +517,60 @@ const ProfileAnalytics : FC<props> = (props) => {
           })}
         </div>
       </div>
-      <div className='flex justify-center mb-6 z-10'>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button 
-              className='text-lg font-bold bg-custom-blue hover:bg-blue-900
-              rounded-lg'
+      { activeAnalytics == "Overview" &&
+        <div className='flex justify-center mb-6 z-10'>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button 
+                className='text-lg font-bold bg-custom-blue hover:bg-blue-900
+                rounded-lg'
+              >
+                {timeScale} <ChevronDown/>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              className='bg-blue-300 rounded-xl px-2 py-1.5 border mt-1'
             >
-              {timeScale} <ChevronDown/>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent 
-            className='bg-blue-300 rounded-xl px-2 py-1.5 border mt-1'
-          >
-            <DropdownMenuItem 
-              className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
-              rounded-xl overflow-hidden'
-              onClick={ () => setTimeScale("Last Week") }
-            >
-              <div className='hover:bg-sky-100 px-3 py-1 w-full'>
-                Last Week
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
-              rounded-xl overflow-hidden'
-              onClick={ () => setTimeScale("Last 30 Days") }
-            >
-              <div className='hover:bg-sky-100 px-3 py-1 w-full'>
-                Last 30 Days
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
-              rounded-xl overflow-hidden'
-              onClick={ () => setTimeScale("Last 90 Days") }
-            >
-              <div className='hover:bg-sky-100 px-3 py-1 w-full'>
-                Last 90 Days
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className='p-0 hover:cursor-pointer text-lg font-bold
-              rounded-xl overflow-hidden'
-              onClick={ () => setTimeScale("Last 6 Months") }
-            >
-              <div className='hover:bg-sky-100 px-3 py-1 w-full'>
-                Last 6 Months
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+              <DropdownMenuItem 
+                className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
+                rounded-xl overflow-hidden'
+                onClick={ () => setTimeScale("Last Week") }
+              >
+                <div className='hover:bg-sky-100 px-3 py-1 w-full'>
+                  Last Week
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
+                rounded-xl overflow-hidden'
+                onClick={ () => setTimeScale("Last 30 Days") }
+              >
+                <div className='hover:bg-sky-100 px-3 py-1 w-full'>
+                  Last 30 Days
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className='p-0 mb-1 hover:cursor-pointer text-lg font-bold
+                rounded-xl overflow-hidden'
+                onClick={ () => setTimeScale("Last 90 Days") }
+              >
+                <div className='hover:bg-sky-100 px-3 py-1 w-full'>
+                  Last 90 Days
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className='p-0 hover:cursor-pointer text-lg font-bold
+                rounded-xl overflow-hidden'
+                onClick={ () => setTimeScale("Last 6 Months") }
+              >
+                <div className='hover:bg-sky-100 px-3 py-1 w-full'>
+                  Last 6 Months
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      }
       <div className="flex justify-center flex-wrap flex-grow gap-x-8">
         { activeAnalytics === "Overview" ? 
           getAnalyticsOverview()
