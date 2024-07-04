@@ -19,6 +19,7 @@ type navLink = {
   text: string,
   href: string,
   adminOnly?: boolean,
+  userOnly?: boolean,
 }
 
 const NavBar: FC<{profile: Profile}> = (props) => {
@@ -39,9 +40,14 @@ const NavBar: FC<{profile: Profile}> = (props) => {
 
   const links : navLink[] = [
     { text: "Search Offerings", href: "browse" },
-    { text: "Make a Post", href: "createPost" },
+    { text: "Make a Post", href: "createPost", userOnly: true },
     { text: "Search Users", href: "profiles" },
   ];
+
+  const linkShouldDisable = (link : navLink) => {
+    return link.userOnly && profile &&
+      (profile.username === "Admin" || profile.username === "Guest");
+  }
 
   return <>
     <nav className="fixed top-0 z-50 w-full flex justify-between items-center px-4 py-3 bg-white shadow-md">
@@ -53,9 +59,22 @@ const NavBar: FC<{profile: Profile}> = (props) => {
             <Link
               key={`${link.href}-desktop`}
               href={`/${link.href}`}
-              className="inline-block px-4 py-2 ease-linear duration-75
-            hover:bg-blue-300 rounded-md font-extrabold font-sans text-lg"
+              className={`relative inline-block px-4 py-2 ease-linear ` +
+              `duration-75 rounded-md font-extrabold font-sans text-lg ` +
+              `group ` +
+              `${linkShouldDisable(link)
+                ? "line-through active:pointer-events-none"
+                : "hover:bg-blue-300"}`
+              }
             >
+              {linkShouldDisable(link) &&
+                <div className='hidden group-hover:flex absolute top-10 left-0 right-0 justify-center'>
+                  <span className="inline-block px-2 py-1 bg-gray-700
+                  rounded-md text-sm text-gray-200 font-bold text-center">
+                    Disabled for <br/> {profile.username}s
+                  </span>
+                </div>
+              }
               { link.text }
             </Link>
             <div className='w-[1px] h-8 bg-blue-300'></div>
