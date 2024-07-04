@@ -446,7 +446,7 @@ const ProfileAnalytics : FC<props> = (props) => {
           { analyticsSections.map((section) => {
             return (
               <button 
-                className={`text-lg px-2 py-1 rounded-md transition
+                className={`text-lg font-light px-2 py-1 rounded-md transition
                 ${section === activeAnalytics ? 'bg-sky-200' 
                 : 'hover:bg-blue-300'}`}
                 disabled={section === activeAnalytics}

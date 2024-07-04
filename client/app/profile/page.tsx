@@ -127,7 +127,7 @@ const Page : FC = (props: any) => {
   const getTabSection = () => {
     if (activeSection === "Reviews") {
       if (reviews.length === 0) {
-        return <h3 className="mt-8 text-xl">You have no reviews</h3>
+        return <h3 className="mt-8 text-xl font-light">You have no reviews</h3>
       }
       return (
         <div className="flex w-full items-start justify-center">
@@ -186,7 +186,7 @@ const Page : FC = (props: any) => {
         )
     } else {
       if (posts.length === 0) {
-        return <h3 className="mt-8 text-xl">You haven't made any posts yet!</h3>
+        return <h3 className="mt-8 text-xl font-light">You haven't made any posts yet!</h3>
       }
       return (
         <div 
