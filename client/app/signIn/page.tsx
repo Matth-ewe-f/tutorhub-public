@@ -15,7 +15,7 @@ const Page : FC = () => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
 	const cookies = new Cookies(null, { path: '/' });
 	const router = useRouter();
-	const [loginType, setLoginType] = useState("user");
+	const [loginType, setLoginType] = useState("new");
 	const [username, setUsername] = useState("");
 	const [affiliation, setAffiliation] = useState("student");
 	const [department, setDepartment] = useState("");
@@ -116,9 +116,13 @@ const Page : FC = () => {
 	}
 
   return (
-		<div className="flex justify-center mt-32">
+		<div className="flex flex-col items-center mt-12 mx-auto max-w-2xl">
+			<h1 className="text-4xl font-bold">Welcome to Tutorhub!</h1>
+			<p className="text-lg font-light text-justify mt-6">This is a demo of a tutor searching and matching application developed for the Johns Hopkins University's "Object Oriented Software Engineering" course.</p>
+			<p className="text-lg font-light text-justify mt-2">The user interface was primarily developed by <a href="http://matthewflynnmusic.com/" className="underline">Matthew Flynn</a>, using React, Tailwind, and shadcn/ui.</p>
+			<p className="text-lg font-light text-justify mt-2">To get a quick feel for the site, you can log in as a guest, but you won't be able to see the pages for creating a profile or tutoring post. You can also create a user (with no personal information) to fully explore the site.</p>
 			<div 
-				className="flex flex-wrap gap-y-4 gap-x-8 items-start justify-center
+				className="mt-8 flex flex-wrap gap-y-4 gap-x-8 items-start justify-center
 				w-96 bg-white rounded-2xl p-6 shadow-md"
 			>
 				<div className="w-full flex flex-col justify-center items-center">
@@ -127,19 +131,19 @@ const Page : FC = () => {
 					</h1>
 					<RadioGroup
 						className="flex mb-2"
-						defaultValue="user"
+						defaultValue="new"
 						onValueChange={ (value) => changeLoginType(value) }
 					>
-						<div className="flex items-center gap-0.5 cursor-pointer">
-							<RadioGroupItem value="user" id="user" className="text-lg"/>
-							<Label htmlFor="user" className="text-lg cursor-pointer">
-								Existing User
-							</Label>
-						</div>
 						<div className="flex items-center gap-0.5 cursor-pointer">
 							<RadioGroupItem value="new" id="new-user" className="text-lg"/>
 							<Label htmlFor="new-user" className="text-lg cursor-pointer">
 								New User
+							</Label>
+						</div>
+						<div className="flex items-center gap-0.5 cursor-pointer">
+							<RadioGroupItem value="user" id="user" className="text-lg"/>
+							<Label htmlFor="user" className="text-lg cursor-pointer">
+								Existing User
 							</Label>
 						</div>
 						<div className="flex items-center gap-0.5">
