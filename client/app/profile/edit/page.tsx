@@ -1,7 +1,6 @@
 "use client";
 import React, { FC, useEffect, useState } from "react";
 import "../../../styles/global.css";
-import NavBar from "../../../components/Navbar";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,17 +27,23 @@ const Page : FC = () => {
   const [userId, setUserId] = useState("");
 	const [photoFile, setPhotoFile] = useState<File>(null);
   const [profileData, setProfileData] = useState(null);
+	const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
 				const username = cookies.get("tutorhub-public-username");
+				if (username === "Admin" || username === "Guest"){
+					router.replace('/profile');
+					return;
+				}
         const response = await axios.get(`${BACKEND_URL}/profiles/getByUsername/${username}`);
 				if (response.data.data.length === 0) {
 					router.replace('/signIn');
 					return;
 				}
         setProfileData(response.data);
+				setLoading(false);
       } catch (error) {
         console.error("Failed to fetch profile:", error);
       }
@@ -120,6 +125,10 @@ const Page : FC = () => {
 			}
 			router.replace('/profile');
 		}
+	}
+
+	if (loading) {
+		return <Loader/>
 	}
 
   return <>

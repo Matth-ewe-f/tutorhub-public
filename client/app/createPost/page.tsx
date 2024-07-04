@@ -43,8 +43,9 @@ const Page : FC = () => {
 
   const getProfile = async () => {
     const username = cookies.get("tutorhub-public-username");
-    if (username === "Admin") {
+    if (username === "Admin" || username === "Guest") {
       router.replace('/');
+      return;
     }
     const response = await axios.get(`${api}/profiles/getByUsername/${username}`);
     if (response.data.data.length === 0) {
