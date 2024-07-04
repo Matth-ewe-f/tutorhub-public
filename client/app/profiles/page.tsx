@@ -60,8 +60,9 @@ const Page : FC = () => {
   return <>
 		<NavBar profile={visitorProfile} />
 		<div className="flex flex-col lg:flex-row min-h-screen">
-			<div className="flex flex-row flex-wrap min-h-24 lg:flex-col lg:min-w-80 lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
-				<div className="input-container mx-6 my-3 lg:my-6 flex-grow-[2] lg:flex-grow-0">
+			<div className="flex flex-row flex-wrap min-h-24 lg:flex-col lg:min-w-80 lg:w-1/4 items-center justify-center lg:justify-start py-3 pt-20 bg-blue-300">
+				<h3 className="ml-4 lg:ml-0 mt-2 text-xl font-bold uppercase">Search Users</h3>
+        <div className="max-w-lg input-container mx-6 my-3 flex-grow-[2] lg:flex-grow-0">
 					<input 
 						type="text"
 						name="text"
@@ -74,25 +75,27 @@ const Page : FC = () => {
 					<div className="under-line"></div>
 				</div>
 			</div>
-			<div className="w-full lg:w-3/4 py-4 md:pt-24">
+			<div className="w-full lg:w-3/4 py-4 lg:pt-24">
 				<div className="container mx-auto px-6">
 					<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             { searchInput.length > 1 ?
               filteredProfiles.map((profile) => (
-                <div className="w-full" key={profile._id}>
+                <div className="w-full flex justify-center" key={profile._id}>
                   <ProfileCard 
                     profile={profile}
+                    className="w-full"
                     self={profile.username == visitorProfile.username}
-                  />
+                    />
                 </div>
               ))
             :
               profiles.map((profile) => (
-                <div className="w-full" key={profile._id}>
-                <ProfileCard 
-                  profile={profile}
-                  self={profile.username == visitorProfile.username}
-                />
+                <div className="w-full flex justify-center" key={profile._id}>
+                  <ProfileCard 
+                    profile={profile}
+                    className="w-full"
+                    self={profile.username == visitorProfile.username}
+                  />
                 </div>
               ))
             }

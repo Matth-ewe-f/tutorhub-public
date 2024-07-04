@@ -1,8 +1,13 @@
 "use client";
 import { useRouter } from 'next/navigation';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, HTMLAttributes, useEffect, useState } from 'react';
 
-const PostCard: FC<{profile: Profile, self?: boolean}> = ({ profile, self }) => {
+type props = {
+  profile: Profile,
+  self?: boolean,
+} & HTMLAttributes<HTMLDivElement>;
+
+const PostCard: FC<props> = ({ profile, self, className }) => {
   const [img, setImg] = useState("/defaultimg.jpeg");
   const [titleUnderline, setTitleUnderline] = useState(false);
   const router = useRouter();
@@ -47,8 +52,8 @@ const PostCard: FC<{profile: Profile, self?: boolean}> = ({ profile, self }) => 
 
   return ( <> 
     <div 
-      className="max-w-sm rounded overflow-hidden shadow-lg bg-white
-      hover:-translate-y-2 transition duration-75 cursor-pointer"
+      className={`max-w-sm rounded overflow-hidden shadow-lg bg-white
+      hover:-translate-y-2 transition duration-75 cursor-pointer ${className}`}
       onMouseEnter={() => setTitleUnderline(true)}
       onMouseLeave={() => setTitleUnderline(false)}
       onClick={() => router.push(`/profile/${profile._id}`)}
