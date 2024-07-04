@@ -32,9 +32,9 @@ const PostCard: FC<props> = ({ profile, self, className }) => {
 
   const formatAffiliation = (s : string) => {
     if (profile.affiliation === "student" && profile.graduationYear) {
-      return ` ${capitalize(profile.affiliation)}, ${profile.graduationYear}`;
+      return `${capitalize(profile.affiliation)}, ${profile.graduationYear}`;
     } else if (profile.affiliation != "otherAffiliate") {
-      return ` ${capitalize(profile.affiliation)}`;
+      return `${capitalize(profile.affiliation)}`;
     } else {
       return "";
     }
@@ -64,18 +64,18 @@ const PostCard: FC<props> = ({ profile, self, className }) => {
         alt={profile.username}
       />
       <div className="px-6 py-4">
-        <div className="mb-2">
+        <div className="mb-1">
           <div 
             className={`font-bold text-xl 
             ${titleUnderline ? 'underline' : ''}`}
           >
             {profile.username} {self ? "(You)" : ""}
           </div>
-          <p className="text-gray-600 text-sm min-h-5">
-            { formatAffiliation(profile.affiliation) }
+          <p className="text-sm font-light min-h-5">
+            ({ formatAffiliation(profile.affiliation) })
           </p>
         </div>
-        <p className="text-gray-700 text-base">
+        <p className="font-light text-sm">
           {trimBio(profile.description)}
         </p>
       </div>

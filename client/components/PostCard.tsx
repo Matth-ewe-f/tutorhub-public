@@ -62,14 +62,14 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       <div className="border-t px-3 pb-3 pt-1">
         <div className="py-0.5">
           <div 
-            className={`text-2xl font-bold font-sans text-slate-700 uppercase
+            className={`text-2xl font-bold font-sans text-slate-700
             truncate ${titleUnderline ? 'underline' : ''}`}
           >
             {post.courseName ? post.courseName : post.activityTitle}
           </div>
         </div>
         <div className={`flex items-center justify-between ${post.courseNumber !== '' ? 'justify-between' : ''}`}>
-          <p className="text-slate-500 text-sm font-sans">{post.courseNumber}</p>
+          <p className="text-sm font-light font-sans">{post.courseNumber}</p>
           { post.reviews.length > 0 ?
             <div className="ratings flex items-center">
               <Star size={20} className="fill-black text-black inline-block mr-1"/>
@@ -80,12 +80,15 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             <></>
           }
         </div>
-        <p className="text-slate-800 text-base font-sans line-clamp-2 cursor-pointe">
+        <p className="text-sm font-light font-sans line-clamp-2">
           {post.description ? post.description : post.activityDescription}
         </p>
-        <div className="pt-1 flex justify-between"> 
-          <p className="text-black text-sm font-sans font-bold">{formatPrice(post.price)}</p>
-          <p className="text-black text-sm font-sans">
+        <div className='h-6'/>
+        <div className="absolute left-0 bottom-3 w-full pt-1 flex justify-between"> 
+          <p className="ml-3 text-black text-sm font-sans font-bold">
+            {formatPrice(post.price)}
+          </p>
+          <p className="mr-3 text-black font-light text-sm font-sans">
             {"Created by "}
             <a 
               href={`/profile/` + post.userId} 
