@@ -27,7 +27,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const loadImage = async (post : Post) => {
     if (post.activityPostPicKey) {
       const key = post.activityPostPicKey;
-      const url = `https://tutorhubactivitypostpics.s3.amazonaws.com/${key}`;
+      const url = `https://tutorhub-public.s3.amazonaws.com/${key}`;
       setImgUrl(url);
     }
   }
