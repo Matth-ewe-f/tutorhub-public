@@ -5,7 +5,7 @@ import axios from "axios";
 import CreatePost from "@/components/CreatePost";
 import { useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
-import { Loader } from "lucide-react";
+import Loader from "@/components/Loader";
 
 const Page : FC = () => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
