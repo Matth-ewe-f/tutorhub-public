@@ -27,6 +27,10 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   useEffect(() => {
     const fetchProfile = async () => {
 			const username = cookies.get("tutorhub-public-username");
+			if (username === "Admin" || username === "Guest") {
+				router.back();
+				return;
+			}
       try {
         const response = await axios.get(`${BACKEND_URL}/profiles/getByUsername/${username}`);
 				if (response.data.data.length === 0) {
