@@ -60,7 +60,8 @@ const Page : FC = () => {
   return <>
 		<NavBar profile={visitorProfile} />
 		<div className="flex flex-col lg:flex-row min-h-screen">
-			<div className="flex flex-row flex-wrap min-h-24 lg:flex-col lg:min-w-80 lg:w-1/4 items-center justify-center lg:justify-start py-3 pt-20 bg-blue-300">
+    <div className="hidden lg:block lg:w-1/4 lg:min-w-80"/>
+			<div className="z-10 sticky top-0 lg:fixed flex flex-row flex-wrap lg:h-full min-h-24 lg:flex-col lg:min-w-80 lg:w-1/4 items-center justify-center lg:justify-start py-3 pt-20 bg-blue-300">
 				<h3 className="ml-4 lg:ml-0 mt-2 text-xl font-bold uppercase">Search Users</h3>
         <div className="max-w-lg input-container mx-6 my-3 flex-grow-[2] lg:flex-grow-0">
 					<input 

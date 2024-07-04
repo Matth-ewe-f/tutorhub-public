@@ -25,6 +25,7 @@ const Page: FC = () => {
 	const [userId, setUserId] = useState('');
 	const [profile, setProfile] = useState<Profile>();
 	const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+	const [fixedOffset, setFixedOffset] = useState(0);
 
 	// Loading State
 	const [loading, setLoading] = useState(true);
@@ -323,7 +324,8 @@ const Page: FC = () => {
 	return <>
 		<NavBar profile={profile} />
 		<div className="flex flex-col lg:flex-row min-h-screen">
-			<div className="flex flex-col flex-wrap min-h-24 lg:min-w-80 lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
+			<div className="hidden lg:block lg:w-1/4 lg:min-w-80"/>
+			<div className="z-10 sticky lg:fixed top-0 lg:h-full flex flex-col flex-wrap min-h-24 lg:min-w-80 w-full lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
 				<h3 className="mt-2 text-xl font-bold uppercase">Search Posts</h3>
 				<div className="w-full flex flex-row flex-wrap lg:flex-col items-center justify-center">
 					<div className="max-w-md input-container mx-6 mt-3 mb-3 lg:mb-6 flex-grow lg:flex-grow-0">
@@ -358,7 +360,7 @@ const Page: FC = () => {
 					</div>
 				</div>
 			</div>
-			<div className="w-full lg:w-3/4 py-4 md:pt-24">
+			<div className="w-full lg:w-3/4 py-4 lg:pt-24">
 				<div className="container mx-auto px-6">
 					<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
 						{filteredPosts.map((posts) => (
