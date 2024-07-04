@@ -214,7 +214,7 @@ const Page : FC = (props: any) => {
             {profile.username}
             {profile.username !== "Admin" && profile.username != "Guest" &&
               ` - ${profile.department} ` +
-              profile.graduationYear ? `, ${profile.graduationYear}` : ''
+              (profile.graduationYear ? `, ${profile.graduationYear}` : '')
             }
           </h1>
           <p className="mr-8 font-light text-base text-justify">{getBiography()}</p>
