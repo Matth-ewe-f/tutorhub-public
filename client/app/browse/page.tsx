@@ -35,8 +35,8 @@ const Page: FC = () => {
 
 	// Checkbox Filters
 	const [typeFilters, setTypeFilters] = useState({
-		courses: false,
-		activities: false,
+		courses: true,
+		activities: true,
 	});
 	const [priceFilters, setPriceFilters] = useState({
 		highToLow: false,
@@ -87,12 +87,12 @@ const Page: FC = () => {
 
 	const filterPosts = async () => {
 		let filtered = posts;
-		if (typeFilters.courses || typeFilters.activities) {
+		// if (typeFilters.courses || typeFilters.activities) {
 			filtered = filtered.filter(post => {
 				return (typeFilters.courses && 'courseName' in post) ||
 					(typeFilters.activities && 'activityTitle' in post);
 			});
-		}
+		// }
 
 		if (priceFilters.highToLow && !priceFilters.lowToHigh) {
 			filtered = [...filtered.sort((a, b) => b.price - a.price)];
@@ -171,6 +171,14 @@ const Page: FC = () => {
 		setSearchInput(searchValue);
 	}
 
+	const getSearchBarPlaceholder = () => {
+		if (!typeFilters.courses && typeFilters.activities) {
+			return "Search by Title";
+		} else {
+			return "Title or Course Number";
+		}
+	}
+
 	if (loading) {
 		return (<> <Loader /> </>);
 	}
@@ -233,7 +241,7 @@ const Page: FC = () => {
 					</AccordionContent>
 				</AccordionItem>
 				{/** Tags */}
-				{!typeFilters.courses &&
+				{typeFilters.activities &&
 					<AccordionItem value="item-3">
 						<AccordionTrigger className="font-light">By Tag</AccordionTrigger>
 						<AccordionContent>
@@ -326,17 +334,16 @@ const Page: FC = () => {
 		<div className="flex flex-col lg:flex-row min-h-screen">
 			<div className="hidden lg:block lg:w-1/4 lg:min-w-80"/>
 			<div className="z-10 sticky lg:fixed top-0 lg:h-full flex flex-col flex-wrap min-h-24 lg:min-w-80 w-full lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
-				<h3 className="mt-2 text-xl font-bold uppercase">Search Posts</h3>
+				<h3 className="mt-2 text-xl font-bold uppercase">Search Offerings</h3>
 				<div className="w-full flex flex-row flex-wrap lg:flex-col items-center justify-center">
 					<div className="max-w-md input-container mx-6 mt-3 mb-3 lg:mb-6 flex-grow lg:flex-grow-0">
 						<input 
 							type="text"
 							name="text"
 							className="min-w-64 w-full input placeholder-[#406a90]"
-							placeholder="Name or Course Number"
+							placeholder={getSearchBarPlaceholder()}
 							onChange={(e) => searchItems(e.target.value)}
 						/>
-						<label className="label">Search</label>
 						<div className="top-line"></div>
 						<div className="under-line"></div>
 					</div>
@@ -344,7 +351,7 @@ const Page: FC = () => {
 						<Accordion type="single" collapsible className="w-40 [&_button:not([role=checkbox])]:py-3">
 							<AccordionItem className="border-none" value="item-1">
 								<AccordionTrigger className="text-xl font-light">
-									Filter Posts
+									Filters
 								</AccordionTrigger>
 								<AccordionContent>
 									{ getFilterJSX() }
@@ -354,7 +361,7 @@ const Page: FC = () => {
 					</div>
 					<div className="hidden lg:block min-w-40 mx-4">
 						<h1 className="text-xl font-light text-center">
-							Filter Posts
+							Filters
 						</h1>
 						{ getFilterJSX() }
 					</div>
@@ -362,17 +369,25 @@ const Page: FC = () => {
 			</div>
 			<div className="w-full lg:w-3/4 py-4 lg:pt-24">
 				<div className="container mx-auto px-6">
-					<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-						{filteredPosts.map((posts) => (
-							<div className="flex justify-center items-center">
-								<PostCard 
-									key={posts._id}
-									className="w-full h-full max-w-96"
-									post={posts}
-								/>
-							</div>
-						))}
-					</div>
+					{filteredPosts.length != 0 ? 
+						<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+							{filteredPosts.map((posts) => (
+								<div className="flex justify-center items-center">
+									<PostCard 
+										key={posts._id}
+										className="w-full h-full max-w-96"
+										post={posts}
+									/>
+								</div>
+							))}
+						</div>
+					:
+						<div className="flex items-center justify-center">
+							<h5 className="mt-4 text-2xl font-light">
+								No offerings match your search
+							</h5>
+						</div>
+					}
 				</div>
 			</div>
 		</div>

@@ -71,36 +71,43 @@ const Page : FC = () => {
 						placeholder="Username"
 						onChange={(e) => searchItems(e.target.value)}
 					/>
-					<label className="label">Search</label>
 					<div className="top-line"></div>
 					<div className="under-line"></div>
 				</div>
 			</div>
 			<div className="w-full lg:w-3/4 py-4 lg:pt-24">
 				<div className="container mx-auto px-6">
-					<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            { searchInput.length > 1 ?
-              filteredProfiles.map((profile) => (
-                <div className="w-full flex justify-center" key={profile._id}>
-                  <ProfileCard 
-                    profile={profile}
-                    className="w-full"
-                    self={profile.username == visitorProfile.username}
+          { searchInput.length == 0 || filteredProfiles.length != 0 ?
+            <div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+              { searchInput.length > 1 ?
+                filteredProfiles.map((profile) => (
+                  <div className="w-full flex justify-center" key={profile._id}>
+                    <ProfileCard 
+                      profile={profile}
+                      className="w-full"
+                      self={profile.username == visitorProfile.username}
+                      />
+                  </div>
+                ))
+              :
+                profiles.map((profile) => (
+                  <div className="w-full flex justify-center" key={profile._id}>
+                    <ProfileCard 
+                      profile={profile}
+                      className="w-full"
+                      self={profile.username == visitorProfile.username}
                     />
-                </div>
-              ))
-            :
-              profiles.map((profile) => (
-                <div className="w-full flex justify-center" key={profile._id}>
-                  <ProfileCard 
-                    profile={profile}
-                    className="w-full"
-                    self={profile.username == visitorProfile.username}
-                  />
-                </div>
-              ))
-            }
-					</div>
+                  </div>
+                ))
+              }
+            </div>
+          :
+            <div className="flex items-center justify-center">
+              <h5 className="mt-4 text-2xl font-light">
+                No users match your search
+              </h5>
+            </div>
+          }
 				</div>
 			</div>
 		</div>

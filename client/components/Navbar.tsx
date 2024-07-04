@@ -38,7 +38,7 @@ const NavBar: FC<{profile: Profile}> = (props) => {
   }
 
   const links : navLink[] = [
-    { text: "Search Posts", href: "browse" },
+    { text: "Search Offerings", href: "browse" },
     { text: "Make a Post", href: "createPost" },
     { text: "Search Users", href: "profiles" },
   ];
