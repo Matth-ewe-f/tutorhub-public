@@ -45,7 +45,7 @@ const ReportCard : FC<props> = (props) => {
       // const picUrl = `${api}/profilePics/get/${profile.profilePicKey}`;
       // const picResponse = await axios.get(picUrl);
       const key = profile.profilePicKey;
-      const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`
+      const url = `https://tutorhub-public.s3.amazonaws.com/${key}`
       setReporterPic(url);
     } else {
       setReporterPic('/defaultimg.jpeg')
@@ -60,7 +60,7 @@ const ReportCard : FC<props> = (props) => {
       // const picUrl = `${api}/profilePics/get/${profile.profilePicKey}`;
       // const picResponse = await axios.get(picUrl);
       const key = profile.profilePicKey;
-      const url = `https://tutorhubprofilepics.s3.amazonaws.com/${key}`
+      const url = `https://tutorhub-public.s3.amazonaws.com/${key}`
       setReporteePic(url);
     } else {
       setReporteePic('/defaultimg.jpeg')
