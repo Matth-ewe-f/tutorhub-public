@@ -6,6 +6,7 @@ import axios from 'axios';
 type Props = {
   review: Review,
   loggedInUserId?: string,
+  handleDeleteFunc: (id: string) => void
 } & HTMLAttributes<HTMLDivElement>
 
 const ReviewCard : FC<Props> = (props) => {
@@ -47,7 +48,7 @@ const ReviewCard : FC<Props> = (props) => {
   const handleDeleteReview = async () => {
     try {
       await axios.delete(`${api}/postReviews/${review._id}`);
-      window.location.reload();
+      props.handleDeleteFunc(review._id);
     } catch (error) {
       console.error('Error deleting review:', error);
     }

@@ -9,6 +9,7 @@ type props = {
 const PostExpanded : FC<props> = ({post, userId}) => {
   const sections = ["Description", "Reviews"];
   const [activeSection, setActiveSection] = useState(sections[0]);
+  const [deletedReviews, setDeletedReviews] = useState([]);
 
   const getImgSrc = (post : Post) => {
     if (post.activityPostPicKey) {
@@ -28,6 +29,10 @@ const PostExpanded : FC<props> = ({post, userId}) => {
     } else {
       return `from $${price}`;
     }
+  }
+
+  const handleReviewDeletion = (id) => {
+    setDeletedReviews([...deletedReviews, id]);
   }
 
   return <>
@@ -82,7 +87,9 @@ const PostExpanded : FC<props> = ({post, userId}) => {
             { activeSection == "Reviews" &&
               post.reviews.map((review, index) => {
                 return <ReviewCardSmall review={review} loggedInUserId={userId}
-                className={`${index != 0 && "border-t"} border-slate-400 px-4 pb-2`}/>
+                className={`${index != 0 && "border-t"} border-slate-400 px-4 ` + 
+                `pb-2 ` + (deletedReviews.includes(review._id) && "hidden")}
+                handleDeleteFunc={handleReviewDeletion}/>
               })
             }
           </div>
