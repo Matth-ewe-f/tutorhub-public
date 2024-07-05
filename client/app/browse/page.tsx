@@ -16,6 +16,7 @@ import "@/styles/loader.css";
 import Loader from "@/components/Loader";
 import { Checkbox } from "@/components/ui/checkbox"
 import { useRouter } from "next/navigation";
+import PostExpanded from "@/components/PostExpanded";
 
 const Page: FC = () => {
 	const api = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -25,7 +26,6 @@ const Page: FC = () => {
 	const [userId, setUserId] = useState('');
 	const [profile, setProfile] = useState<Profile>();
 	const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-	const [fixedOffset, setFixedOffset] = useState(0);
 
 	// Loading State
 	const [loading, setLoading] = useState(true);
@@ -309,6 +309,7 @@ const Page: FC = () => {
 
 	return <>
 		<NavBar profile={profile} />
+		{posts.length > 0 && <PostExpanded post={posts[0]} userId={profile._id}/>}
 		<div className="flex flex-col lg:flex-row min-h-screen">
 			<div className="hidden lg:block lg:w-1/4 lg:min-w-80"/>
 			<div className="z-10 sticky lg:fixed top-0 lg:h-full flex flex-col flex-wrap min-h-24 lg:min-w-80 w-full lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
