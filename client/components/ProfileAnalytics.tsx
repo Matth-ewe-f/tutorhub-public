@@ -198,7 +198,7 @@ const ProfileAnalytics : FC<props> = (props) => {
       point._id = capitalize(point._id);
       return point;
     })
-    setMajorData(createOtherCategory(majors, 0.08));
+    setMajorData(createOtherCategory(majors, 0.05));
     let affiliations : pieGraphPoint[] = data.affiliations;
     affiliations = affiliations.map((point) => {
       point._id = capitalize(point._id);
@@ -207,7 +207,7 @@ const ProfileAnalytics : FC<props> = (props) => {
     setAffiliationData(affiliations);
     let grads : pieGraphPoint[] = data.graduationYears;
     grads = grads.filter((obj) => obj._id );
-    setYearData(createOtherCategory(grads, 0.02));
+    setYearData(createOtherCategory(grads, 0.05));
   }
 
   useEffect(() => { getViewsData() }, [])
@@ -216,10 +216,10 @@ const ProfileAnalytics : FC<props> = (props) => {
 
   useEffect(() => { getDemographicsData() }, [])
   
-  const pieColors = ['#ef4444', '#a3e635', '#38bdf8', '#ec4899', '#f59e0b', '#34d399', '#a855f7']
+  const pieColors = ['#ef4444', '#a3e635', '#38bdf8', '#ec4899', '#f59e0b', '#34d399', '#a855f7', '#e3d000', '#79e880', '#ffaf85', '#5727f5', '#adadad']
   
   const lineChartTooltipGenereator = (
-    { payload, label, active }, valueLabel : string
+    { payload, label, active}, valueLabel : string, d : number
   ) => {
     if (active) {
       return (
@@ -228,23 +228,24 @@ const ProfileAnalytics : FC<props> = (props) => {
           border-slate-300"
         >
           <p className="font-bold text-slate-800">{label}</p>
-          <p className="text-gray-600">{`${valueLabel}: ${payload[0].value.toFixed(1)}`}</p>
+          <p className="text-gray-600">{`${valueLabel}: ${payload[0].value.toFixed(d)}`}</p>
         </div>
       );
     }
     return <></>;
   }
 
-  const lineChartTooltip = (valueLabel : string) => {
+  const lineChartTooltip = (valueLabel : string, d : number) => {
     return ({ payload, label, active }) => { 
-      return lineChartTooltipGenereator({ payload, label, active }, valueLabel)
+      return lineChartTooltipGenereator({ payload, label, active }, valueLabel, d)
     } 
   }
 
   const pieChartLabel = (
     { cx, cy, midAngle, innerRadius, outerRadius, percent }
   ) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const radiusProportion = Math.max((0.75 - (0.5 * percent)), 0.4);
+    const radius = innerRadius + (outerRadius - innerRadius) * radiusProportion;
     const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
     const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
   
@@ -253,10 +254,12 @@ const ProfileAnalytics : FC<props> = (props) => {
         x={x}
         y={y}
         fill="white"
-        textAnchor={x > cx ? 'start' : 'end'}
+        textAnchor={'middle'}
         dominantBaseline="central"
+        className='inline-block bg-black'
       >
         {`${(percent * 100).toFixed(0)}%`}
+        {/* {midAngle.toFixed(0)} */}
       </text>
     );
   };
@@ -274,7 +277,7 @@ const ProfileAnalytics : FC<props> = (props) => {
           className="flex flex-col flex-grow basis-[440px] 
           md:min-w-[440px] max-w-[640px]"
         >
-          <div className="bg-white md:px-8 py-8 mb-8 md:rounded-xl md:shadow-md">
+          <div className="bg-white md:px-8 py-8 mb-8 rounded-xl md:shadow-md">
             <h3 className="text-2xl font-bold mb-4 text-center">
               Number of Profile Views
             </h3>
@@ -282,13 +285,13 @@ const ProfileAnalytics : FC<props> = (props) => {
               <LineChart data={viewsGraphData}>
                 <CartesianGrid stroke="#ccc"/>
                 <Line type="monotone" dataKey="value" stroke="#8884d8" animationDuration={animDuration}/>
-                <Tooltip content={lineChartTooltip("views")}/>
+                <Tooltip content={lineChartTooltip("views", 0)}/>
                 <XAxis dataKey="label"/>
                 <YAxis/>
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="bg-white md:px-8 py-8 mb-8 md:rounded-xl md:shadow-md">
+          <div className="bg-white md:px-8 py-8 mb-8 rounded-xl md:shadow-md">
             <h3 className="text-2xl font-bold mb-4 text-center">
               Average Time Spent on Profile
             </h3>
@@ -296,7 +299,7 @@ const ProfileAnalytics : FC<props> = (props) => {
               <LineChart data={timeGraphData}>
                 <CartesianGrid stroke="#ccc"/>
                 <Line type="monotone" dataKey="value" stroke="#8884d8" animationDuration={animDuration}/>
-                <Tooltip content={lineChartTooltip("seconds")}/>
+                <Tooltip content={lineChartTooltip("seconds", 1)}/>
                 <XAxis dataKey="label"/>
                 <YAxis/>
               </LineChart>
@@ -307,7 +310,7 @@ const ProfileAnalytics : FC<props> = (props) => {
           className="flex flex-col flex-grow basis-[320px] 
           min-w-[320px] max-w-[560px]"
         >
-          <div className="bg-white px-8 py-8 mb-8 md:rounded-xl md:shadow-md">
+          <div className="bg-white px-8 py-8 mb-8 rounded-xl md:shadow-md">
             <h3 className="text-2xl font-bold mb-4 text-center">
               Highest Rated Posts
             </h3>
@@ -496,6 +499,9 @@ const ProfileAnalytics : FC<props> = (props) => {
 
   return (
     <div className="flex flex-col flex-grow">
+      <p className='w-full px-2 md:px-6 mb-2 text-center text-lg font-light'>
+        Analytics data is simulated in this demo version of the app.
+      </p>
       <div className="flex justify-center mb-4">
         <div 
           className="flex flex-row flex-grow-0 px-1 py-1 bg-sky-50 gap-x-1
