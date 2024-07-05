@@ -129,8 +129,8 @@ const Page : FC = (props: any) => {
         return <h3 className="mt-8 text-xl font-light">You have no reviews</h3>
       }
       return (
-        <div className="flex w-full items-start justify-center">
-          <div className="mt-4 mr-8 pt-4 pr-8 min-w-52 h-full border-r border-black"> 
+        <div className="mx-4 flex flex-col sm:flex-row w-full items-start justify-center">
+          <div className="mt-4 mr-8 pt-4 pr-8 min-w-52 h-full sm:border-r border-black"> 
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <div 
@@ -187,7 +187,7 @@ const Page : FC = (props: any) => {
           lg:grid-cols-3 gap-4"
         >
           { posts.map((post) => (
-            <PostCard key={post._id} post={post} />
+            <PostCard key={post._id} post={post} className="max-w-sm"/>
           )) }
         </div>
       )
@@ -332,8 +332,8 @@ const Page : FC = (props: any) => {
         </div>
         <div className="w-full bg-pageBg absolute h-4 top-[50px] z-30"/>
         <div
-          className="relative z-10 border-t border-black bg-pageBg md:px-6 py-8
-          flex justify-center"
+          className="relative z-10 border-t border-black bg-pageBg md:px-6
+          py-8 flex justify-center"
         >
           { getTabSection() }
         </div>

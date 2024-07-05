@@ -197,10 +197,10 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
     } else if (activeSection === "Reviews") {
       return (
         reviews.length === 0 ?
-          <h3 className="text-lg">No reviews on this profile</h3>
+          <h3 className="mt-8 text-xl">No reviews on this profile</h3>
         :
-          <div className="flex w-full items-start justify-center">
-            <div className="mt-4 mr-8 pt-4 pr-8 min-w-52 h-full border-r border-black"> 
+          <div className="mx-4 flex flex-col sm:flex-row w-full items-start justify-center">
+            <div className="mt-4 mr-8 pt-4 pr-8 min-w-52 h-full sm:border-r border-black"> 
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <div 
@@ -265,7 +265,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
             {profileData.username} - {profileData.department}
             {profileData.graduationYear ? `, ${profileData.graduationYear}` : ''}
           </h1>
-          <p className="font-light text-base text-justify">{getBiography()}</p>
+          <p className="mr-8 font-light text-base text-justify">{getBiography()}</p>
         </div>
         <div className="block md:hidden flex-1 max-w-xl">
           <div className="flex mb-2 justify-center items-center gap-x-1">
