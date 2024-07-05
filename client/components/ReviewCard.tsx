@@ -10,7 +10,6 @@ type Props = {
 
 const ReviewCard : FC<Props> = (props) => {
   const review = props.review;
-  const reviewId = review._id;
   const loggedInUserId = props.loggedInUserId;
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const textRef = useRef<HTMLParagraphElement>(null);
@@ -26,7 +25,7 @@ const ReviewCard : FC<Props> = (props) => {
     const profileResponse = await axios.get(profileEndpoint);
     const profile = profileResponse.data.data;
     if (profile) {
-      setLeftByName(`${profile.firstName} ${profile.lastName}`);
+      setLeftByName(profile.username);
       setAnonymous(props.review.isAnonymous);
     } else {
       setAnonymous(true);
@@ -47,7 +46,7 @@ const ReviewCard : FC<Props> = (props) => {
 
   const handleDeleteReview = async () => {
     try {
-      const response = await axios.delete(`${api}/postReviews/${review._id}`);
+      await axios.delete(`${api}/postReviews/${review._id}`);
       window.location.reload();
     } catch (error) {
       console.error('Error deleting review:', error);
@@ -71,7 +70,7 @@ const ReviewCard : FC<Props> = (props) => {
           {anonymous ?
             <span className='font-bold'>Anonymous</span>
             :
-            <a className='font-bold cursor-pointer hover:underline' href={`/profile/${review.posterId}`}>
+            <a className='font-bold cursor-pointer hover:underline' href={`/profile/${review.reviewerId}`}>
               {leftByName}
             </a>
           }
