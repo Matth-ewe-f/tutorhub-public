@@ -60,16 +60,13 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         alt="Post Image"
       />
       <div className="border-t px-3 pb-3 pt-1">
-        <div className="py-0.5">
+        <div className="flex justify-between py-0.5">
           <div 
             className={`text-2xl font-bold font-sans text-slate-700
             truncate ${titleUnderline ? 'underline' : ''}`}
           >
             {post.courseName ? post.courseName : post.activityTitle}
           </div>
-        </div>
-        <div className={`flex items-center justify-between ${post.courseNumber !== '' ? 'justify-between' : ''}`}>
-          <p className="text-sm font-light font-sans">{post.courseNumber}</p>
           { post.reviews.length > 0 ?
             <div className="ratings flex items-center">
               <Star size={20} className="fill-black text-black inline-block mr-1"/>
@@ -79,6 +76,9 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           :
             <></>
           }
+        </div>
+        <div className={`flex items-center justify-between`}>
+          <p className="text-sm font-light font-sans">{post.courseNumber}</p>
         </div>
         <p className="text-sm font-light font-sans line-clamp-2">
           {post.description ? post.description : post.activityDescription}
