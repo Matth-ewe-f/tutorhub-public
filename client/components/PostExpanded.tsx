@@ -15,7 +15,14 @@ type props = {
 
 const PostExpanded : FC<props> = ({post, userId, closeFunc}) => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const sections = ["Description", "Reviews", "Leave Review"];
+
+  let sections : string[];
+  if (userId == post.userId) {
+    sections = ["Description", "Reviews"];
+  } else {
+    sections = ["Description", "Reviews", "Leave a Review"];
+  }
+
   const [activeSection, setActiveSection] = useState(sections[0]);
   const [deletedReviews, setDeletedReviews] = useState([]);
   const [rating, setRating] = useState(1);
