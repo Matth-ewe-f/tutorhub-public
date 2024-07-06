@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import Cookies from "universal-cookie";
+import PostExpanded from "@/components/PostExpanded";
 
 const Page : FC = ({ params }: { params : { id: string }}) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -27,6 +28,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   const [visitorId, setVisitorId] = useState('');
   const [visitorData, setVisitorData] = useState<Profile>();
   const [deletedReviews, setDeletedReviews] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(-1);
 
   const reviewSortMethods = [
     "Highest Rating",
@@ -194,8 +196,8 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
           className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2
           lg:grid-cols-3 gap-4"
         >
-          { posts.map((post) => (
-            <PostCard key={post._id} post={post}/>
+          { posts.map((post, index) => (
+            <PostCard key={post._id} post={post} clickFunc={() => setSelectedPost(index)}/>
           )) }
         </div>
       )
@@ -264,6 +266,10 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   return (
     <>
       <Navbar profile={visitorData}/>
+      {selectedPost >= 0 && selectedPost < posts.length &&
+        <PostExpanded post={posts[selectedPost]} userId={visitorId}
+        closeFunc={() => setSelectedPost(-1)}/>
+      }
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center bg-blue-300
         pt-24 pb-6 md:pt-28 md:pb-12 px-6 md:px-16"

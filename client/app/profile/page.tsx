@@ -13,13 +13,14 @@ import ProfileAnalytics from "@/components/ProfileAnalytics";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import Cookies from "universal-cookie";
+import PostExpanded from "@/components/PostExpanded";
 
 const Page : FC = (props: any) => {
   const api = process.env.NEXT_PUBLIC_BACKEND_URL;
   const cookies = new Cookies(null, {path: "/"});
   const router = useRouter();
   const sections = ["Posts", "Reviews", "Analytics"];
-  const [deletedReviews, setDeletedReviews] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(-1);
 
   const getDefaultSection = () => {
     let parameter = props.searchParams.section;
@@ -187,8 +188,13 @@ const Page : FC = (props: any) => {
           className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2
           lg:grid-cols-3 gap-4"
         >
-          { posts.map((post) => (
-            <PostCard key={post._id} post={post} className="max-w-sm"/>
+          { posts.map((post, index) => (
+            <PostCard 
+              key={post._id}
+              post={post}
+              className="max-w-sm"
+              clickFunc={() => setSelectedPost(index)}
+            />
           )) }
         </div>
       )
@@ -206,6 +212,10 @@ const Page : FC = (props: any) => {
   return (
     <>
       <Navbar profile={profile}/>
+      {selectedPost >= 0 && selectedPost < posts.length &&
+        <PostExpanded post={posts[selectedPost]} userId={profile._id}
+        closeFunc={() => setSelectedPost(-1)}/>
+      }
       <div 
         className="flex flex-col md:flex-row justify-evenly items-center
        bg-blue-300 pt-24 pb-6 md:pt-28 md:pb-12 px-6 md:px-16"
