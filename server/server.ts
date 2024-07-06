@@ -1,8 +1,8 @@
 // server/index.ts
 require('dotenv').config();
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 const App = require('./app');
-App.dbConnection()
+App.dbConnection();
 const app = App.app;
 
 app.listen(PORT, () => {
