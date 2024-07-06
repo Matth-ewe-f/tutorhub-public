@@ -6,6 +6,7 @@ import axios from 'axios';
 type Props = {
   review: Review,
   loggedInUserId?: string,
+  handleDeleteFunc?: (id: string) => void
 } & HTMLAttributes<HTMLDivElement>
 
 const ReviewCard : FC<Props> = (props) => {
@@ -47,7 +48,7 @@ const ReviewCard : FC<Props> = (props) => {
   const handleDeleteReview = async () => {
     try {
       await axios.delete(`${api}/postReviews/${review._id}`);
-      window.location.reload();
+      props.handleDeleteFunc(review._id);
     } catch (error) {
       console.error('Error deleting review:', error);
     }
@@ -66,13 +67,28 @@ const ReviewCard : FC<Props> = (props) => {
           </a>
         </p>
         <p className='text-sm mt-0.5 text-gray-800'>
-          {'Left by '}
-          {anonymous ?
-            <span className='font-bold'>Anonymous</span>
-            :
-            <a className='font-bold cursor-pointer hover:underline' href={`/profile/${review.reviewerId}`}>
-              {leftByName}
-            </a>
+          {showDeleteButton ? 
+            <>
+              You left this review (
+              <button onClick={handleDeleteReview}
+              className='underline text-red-500'>
+                delete?
+              </button>)
+            </>
+          :
+            <>
+              {'Left by '}
+              {anonymous ?
+                <span className='font-bold'>Anonymous</span>
+              :
+                <>
+                  <a className='font-semibold cursor-pointer hover:underline'
+                  href={`/profile/${review.reviewerId}`}>
+                    {leftByName}
+                  </a>
+                </>
+              }
+            </>
           }
         </p>
       </div>
@@ -98,13 +114,6 @@ const ReviewCard : FC<Props> = (props) => {
         </div>
       
       }
-      <div className="flex justify-end">
-        {showDeleteButton && (
-          <button onClick={handleDeleteReview} className='mt-2 font-semibold text-red-500 hover:underline'>
-            Delete my review
-          </button>
-        )}
-      </div>
     </div>
   );
 }

@@ -32,7 +32,7 @@ const Page : FC = () => {
         }
         const response = await axios.get(`${api}/profiles`);
         let data : Profile[] = response.data.data;
-        data = data.filter((p) => p.username !== "Admin");
+        data = data.filter((p) => p.username != "Admin" && p.username != "Guest");
         setProfiles(data);
       } catch (error) {
         console.error('Error fetching posts', error);

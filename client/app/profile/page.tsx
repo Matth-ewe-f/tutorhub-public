@@ -19,6 +19,7 @@ const Page : FC = (props: any) => {
   const cookies = new Cookies(null, {path: "/"});
   const router = useRouter();
   const sections = ["Posts", "Reviews", "Analytics"];
+  const [deletedReviews, setDeletedReviews] = useState([]);
 
   const getDefaultSection = () => {
     let parameter = props.searchParams.section;

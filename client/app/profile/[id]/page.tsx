@@ -26,6 +26,7 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
   const [onPage, setOnPage] = useState(true);
   const [visitorId, setVisitorId] = useState('');
   const [visitorData, setVisitorData] = useState<Profile>();
+  const [deletedReviews, setDeletedReviews] = useState([]);
 
   const reviewSortMethods = [
     "Highest Rating",
@@ -166,6 +167,10 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
     }
   }, []);
 
+  const handleReviewDeletion = (id) => {
+    setDeletedReviews([...deletedReviews, id]);
+  }
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (onPage) {
@@ -236,7 +241,10 @@ const Page : FC = ({ params }: { params : { id: string }}) => {
             { reviews.map((review) => (
               <ReviewCard 
                 review={review}
-                className="mb-4 bg-white rounded-lg shadow-md"
+                className={`mb-4 bg-white rounded-lg shadow-md
+                ${deletedReviews.includes(review._id) && "hidden"}`}
+                loggedInUserId={visitorId}
+                handleDeleteFunc={handleReviewDeletion}
               />
             )) }
           </div>
