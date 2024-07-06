@@ -526,6 +526,7 @@ const CreatePost : FC<createPostProps> =
         disabled={
           submitText == "Loading..."
           || (!editing && !realCourse && postType === "course")
+          || (postType == "activity" && (title == "" || description == ""))
         }
         onClick={ submit }
       >
