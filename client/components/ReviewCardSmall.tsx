@@ -85,7 +85,7 @@ const ReviewCard : FC<Props> = (props) => {
         </p>
       </div>
       <p 
-        className={`text-sm font-thin mt-1 pt-1 md:pt-0 border-t md:border-none
+        className={`text-sm font-thin mt-1 pt-1 md:pt-0
         ${showFull ? '' : 'line-clamp-2'}`} 
         ref={textRef}
       >

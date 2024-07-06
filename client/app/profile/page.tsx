@@ -224,7 +224,7 @@ const Page : FC = (props: any) => {
           <h1 className="text-2xl font-extrabold font-sans uppercase text-black">
             {profile.username}
             {profile.username !== "Admin" && profile.username != "Guest" &&
-              ` - ${profile.department} ` +
+              ` - ${profile.department}` +
               (profile.graduationYear ? `, ${profile.graduationYear}` : '')
             }
           </h1>
