@@ -26,6 +26,7 @@ const Page: FC = () => {
 	const [userId, setUserId] = useState('');
 	const [profile, setProfile] = useState<Profile>();
 	const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+	const [selectedPost, setSelectedPost] = useState(-1);
 
 	// Loading State
 	const [loading, setLoading] = useState(true);
@@ -309,9 +310,10 @@ const Page: FC = () => {
 
 	return <>
 		<NavBar profile={profile} />
-		{posts.length > 6 && 
-			<PostExpanded post={posts[1]} userId={profile._id} visitorId={userId}
-		/>}
+		{selectedPost >= 0 && selectedPost < posts.length &&
+			<PostExpanded post={posts[selectedPost]} userId={profile._id}
+			closeFunc={() => setSelectedPost(-1)}/>
+		}
 		<div className="flex flex-col lg:flex-row min-h-screen">
 			<div className="hidden lg:block lg:w-1/4 lg:min-w-80"/>
 			<div className="z-10 sticky lg:fixed top-0 lg:h-full flex flex-col flex-wrap min-h-24 lg:min-w-80 w-full lg:w-1/4 items-center py-3 pt-20 bg-blue-300">
@@ -352,12 +354,13 @@ const Page: FC = () => {
 				<div className="container mx-auto px-6">
 					{filteredPosts.length != 0 ? 
 						<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-							{filteredPosts.map((posts) => (
+							{filteredPosts.map((posts, index) => (
 								<div className="flex justify-center items-center">
 									<PostCard 
 										key={posts._id}
 										className="w-full h-full max-w-96"
 										post={posts}
+										clickFunc={() => setSelectedPost(index)}
 									/>
 								</div>
 							))}

@@ -5,15 +5,15 @@ import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import axios from "axios";
-import { Star } from "lucide-react";
+import { Star, X } from "lucide-react";
 
 type props = {
-  post : Post
-  userId : string
-  visitorId : string
+  post : Post,
+  userId : string,
+  closeFunc: () => void,
 }
 
-const PostExpanded : FC<props> = ({post, userId, visitorId}) => {
+const PostExpanded : FC<props> = ({post, userId, closeFunc}) => {
 	const api : string = process.env.NEXT_PUBLIC_BACKEND_URL;
   const sections = ["Description", "Reviews", "Leave Review"];
   const [activeSection, setActiveSection] = useState(sections[0]);
@@ -59,7 +59,7 @@ const PostExpanded : FC<props> = ({post, userId, visitorId}) => {
       postName: post.courseName,
       postId: post._id,
       posterId: post.userId,
-      reviewerId: visitorId,
+      reviewerId: userId,
       reviewDescription: reviewText,
       rating: rating,
       isAnonymous: anonymous,
@@ -71,11 +71,15 @@ const PostExpanded : FC<props> = ({post, userId, visitorId}) => {
   }
 
   return <>
-    <div className="z-20 fixed top-8 flex items-center justify-center w-full 
+    <div className="z-40 fixed top-8 flex items-center justify-center w-full 
     h-full bg-slate-100 bg-opacity-70">
-      <div className="flex-grow max-w-lg bg-white rounded-2xl overflow-hidden
+      <div className="relative flex-grow max-w-lg bg-white rounded-2xl overflow-hidden
       shadow-lg">
         <img src={getImgSrc(post)} className="h-60 w-full object-cover"/>
+        <button className="absolute top-0 right-0 p-0.5 bg-gray-300
+        bg-opacity-50 group" onClick={closeFunc}>
+          <X size={48} className="group-hover:text-gray-50 opacity-70"/>
+        </button>
         <div className="pt-4 border-t">
           <div className="px-6">
             <div className="flex justify-between items-start">
@@ -106,7 +110,7 @@ const PostExpanded : FC<props> = ({post, userId, visitorId}) => {
               { sections.map((text) => {
                 return (
                   <button 
-                    className={`z-30 bg-white px-2 ` +
+                    className={`z-50 bg-white px-2 ` +
                     (activeSection == text ? `underline` : `hover:underline`)}
                     onClick={() => setActiveSection(text)}
                   >
@@ -115,7 +119,7 @@ const PostExpanded : FC<props> = ({post, userId, visitorId}) => {
                 )
               })}
             </div>
-            <div className="absolute top-3 z-20 w-full h-[1px] bg-slate-600"/>
+            <div className="absolute top-3 z-40 w-full h-[1px] bg-slate-600"/>
           </div>
           <div className="h-44 overflow-y-scroll">
             { activeSection == "Description" &&
@@ -148,7 +152,15 @@ const PostExpanded : FC<props> = ({post, userId, visitorId}) => {
                     Additional Information
                   </h5>
                 )}
-                <p className="px-6 text-sm font-thin">
+                {(post.gradeReceived || post.professorTakenWith 
+                || post.semesterTaken || post.schoolTakenAt || post.description
+                || post.activityDescription) ? '' :
+                  <h5 className="px-6 pt-1 font-light text">
+                    {post.username} didn't provide any description.
+                  </h5>
+                }
+                <p className={`px-6 text-sm font-thin ` +
+                (post.activityDescription ? 'mt-1' : '')}>
                   {post.activityDescription || post.description}
                 </p>
                 <div className="mx-6 my-2 flex flex-wrap gap-2">

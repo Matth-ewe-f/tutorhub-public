@@ -3,7 +3,8 @@ import { useRouter } from "next/navigation";
 import { Star } from 'lucide-react';
 
 type PostCardProps = {
-  post: Post;
+  post: Post,
+  clickFunc: () => void;
 } & HTMLAttributes<HTMLDivElement>;
 
 const PostCard: React.FC<PostCardProps> = (props) => {
@@ -34,7 +35,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
   const handleClick = () => {
     if (titleUnderline) {
-      router.push(postUrl);
+      props.clickFunc();
     }
   }
 
