@@ -354,12 +354,12 @@ const Page: FC = () => {
 				<div className="container mx-auto px-6">
 					{filteredPosts.length != 0 ? 
 						<div className="grid sm:grid-cols-2 mdmd:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-							{filteredPosts.map((posts, index) => (
+							{filteredPosts.map((post, index) => (
 								<div className="flex justify-center items-center">
 									<PostCard 
-										key={posts._id}
+										key={post._id}
 										className="w-full h-full max-w-96"
-										post={posts}
+										post={post}
 										clickFunc={() => setSelectedPost(index)}
 									/>
 								</div>

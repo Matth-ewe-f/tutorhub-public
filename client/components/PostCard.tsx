@@ -14,10 +14,6 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [avgRating, setAvgRating] = useState(5);
   const [imgUrl, setImgUrl] = useState(defaultImage);
 
-  const router = useRouter();
-
-  const postUrl = post.courseName ? `/post/course/${post._id}` : `/post/activity/${post._id}`;
-
   useEffect(() => {
     let total = 0;
     post.reviews.forEach(r => total += r.rating);
@@ -50,7 +46,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   return (<> 
     <div 
       id={`post-${post._id}`}
-      className={`relative overflow-hidden bg-white rounded shadow-lg cursor-pointer hover:-translate-y-2 transition duration-75 ${props.className}`}
+      className={`min-h-12 relative overflow-hidden bg-white rounded shadow-lg cursor-pointer hover:-translate-y-2 transition duration-75 ${props.className}`}
       onClick={handleClick}
       onMouseEnter={() => setTitleUnderline(true)}
       onMouseLeave={() => setTitleUnderline(false)}
@@ -63,8 +59,9 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       <div className="border-t px-3 pb-3 pt-1">
         <div className="flex justify-between py-0.5">
           <div 
-            className={`text-2xl font-bold font-sans text-slate-700
-            truncate ${titleUnderline ? 'underline' : ''}`}
+            className={"text-2xl font-bold font-sans text-slate-700 " +
+            "text-ellipsis overflow-x-hidden line-clamp-1 " + 
+            (titleUnderline ? 'underline' : '')}
           >
             {post.courseName ? post.courseName : post.activityTitle}
           </div>
