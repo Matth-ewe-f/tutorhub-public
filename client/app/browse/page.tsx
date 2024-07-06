@@ -309,7 +309,9 @@ const Page: FC = () => {
 
 	return <>
 		<NavBar profile={profile} />
-		{posts.length > 0 && <PostExpanded post={posts[0]} userId={profile._id}/>}
+		{posts.length > 6 && 
+			<PostExpanded post={posts[1]} userId={profile._id} visitorId={userId}
+		/>}
 		<div className="flex flex-col lg:flex-row min-h-screen">
 			<div className="hidden lg:block lg:w-1/4 lg:min-w-80"/>
 			<div className="z-10 sticky lg:fixed top-0 lg:h-full flex flex-col flex-wrap min-h-24 lg:min-w-80 w-full lg:w-1/4 items-center py-3 pt-20 bg-blue-300">

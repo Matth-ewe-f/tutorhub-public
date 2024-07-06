@@ -1,13 +1,16 @@
-import React from 'react';
-import { StarIcon as FilledStar } from '@heroicons/react/24/solid';
-import { StarIcon as OutlineStar } from '@heroicons/react/24/outline';
+import React, { FC } from 'react';
+import { Star } from 'lucide-react';
 
-const StarRating = ({ rating, setRating }) => {
+type props = {
+  rating: number,
+  setRating: (star: number) => void,
+  disabled?: boolean
+}
+
+const StarRating : FC<props> = ({ rating, setRating, disabled }) => {
 
   const handleRating = (rate) => {
-    if (rate === rating) {
-      setRating(0); 
-    } else {
+    if (!disabled) {
       setRating(rate);
     }
   };
@@ -18,12 +21,12 @@ const StarRating = ({ rating, setRating }) => {
         <button
           key={star}
           onClick={() => handleRating(star)}
-          className="cursor-pointer"
+          className={disabled ? "cursor-default" : "cursor-pointer"}
         >
           {rating >= star ? (
-            <FilledStar className="w-6 h-6 text-yellow-500" />
+            <Star strokeWidth={1} className='fill-yellow-300'/>
           ) : (
-            <OutlineStar className="w-6 h-6 text-gray-400" />
+            <Star strokeWidth={1} className='fill-black'/>
           )}
         </button>
       ))}
