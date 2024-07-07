@@ -1,4 +1,4 @@
-const PostReview = require("../model/PostReview.ts");
+const PostReview = require("../model/PostReview");
 const mongoose = require("mongoose");
 
 export class PostReviewDao {

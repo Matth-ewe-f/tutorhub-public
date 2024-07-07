@@ -1,7 +1,7 @@
 export {}
 
 const mongoose = require('mongoose');
-const PostReview = require("../model/PostReview.ts");
+const PostReview = require("../model/PostReview");
 const PostReviewSchema = PostReview.schema;
 import ViewSchema = require("./Views");
 

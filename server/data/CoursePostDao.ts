@@ -1,4 +1,4 @@
-const CoursePost = require("../model/CoursePost.ts");
+const CoursePost = require("../model/CoursePost");
 const mongoose = require("mongoose");
 
 interface PostReview {

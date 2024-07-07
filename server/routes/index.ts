@@ -7,20 +7,20 @@ const router = Router()
 
 router.use('/courses', require('./courses'))
 
-router.use('/coursePosts', require('./coursePosts.ts'))
+router.use('/coursePosts', require('./coursePosts'))
 
-router.use('/profiles', require('./profiles.ts'))
+router.use('/profiles', require('./profiles'))
 
-router.use('/profilePics', require('./profilePics.ts'))
+router.use('/profilePics', require('./profilePics'))
 
-router.use('/activityPosts', require('./activityPosts.ts'))
+router.use('/activityPosts', require('./activityPosts'))
 
 router.use('/activityPostPics', require('./activityPostPics'))
 
-router.use('/allPosts', require('./allPosts.ts'))
+router.use('/allPosts', require('./allPosts'))
 
-router.use('/postReviews', require('./postReviews.ts'))
+router.use('/postReviews', require('./postReviews'))
 
-router.use('/reports', require('./reports.ts'))
+router.use('/reports', require('./reports'))
 
 module.exports = router;

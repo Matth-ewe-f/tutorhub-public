@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const {Schema} = require('mongoose');
 import ViewSchema = require("./Views");
 
-const PostReview = require("../model/PostReview.ts");
+const PostReview = require("../model/PostReview");
 const PostReviewSchema = PostReview.schema;
 
 const CoursePostSchema = new mongoose.Schema({

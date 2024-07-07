@@ -1,5 +1,5 @@
-const ActivityPost = require("../model/ActivityPost.ts");
-const PostReview = require("../model/PostReview.ts");
+const ActivityPost = require("../model/ActivityPost");
+const PostReview = require("../model/PostReview");
 const PostReviewSchema = PostReview.schema;
 const mongoose = require("mongoose")
 

@@ -1,6 +1,6 @@
 import { ActivityPostDao } from "./ActivityPostDao";
 
-const Report = require("../model/Report.ts");
+const Report = require("../model/Report");
 const mongoose = require("mongoose")
 
 interface PostReview {

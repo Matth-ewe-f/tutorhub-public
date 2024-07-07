@@ -2,7 +2,7 @@ export {}
 
 import { Request, Response } from 'express';
 
-const ActivityPosts = require("../model/ActivityPost.ts")
+const ActivityPosts = require("../model/ActivityPost")
 
 require('dotenv').config({ path: '.env' }); // Load environment variables from aws.env file
 

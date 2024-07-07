@@ -13,7 +13,7 @@ const CoursePostDao = new CoursePostDaoClass();
 const PostReviewDaoClass = require('../data/PostReviewDao');
 const PostReviewDao = new PostReviewDaoClass();
 
-const PostReview = require("../model/PostReview.ts");
+const PostReview = require("../model/PostReview");
 const PostReviewSchema = PostReview.schema;
 
 router.get('/getByProfileId/:profileId', async (req: any, res: any) => {

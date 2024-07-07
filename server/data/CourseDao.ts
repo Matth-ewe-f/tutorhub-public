@@ -1,4 +1,4 @@
-const Course = require("../model/Course.ts");
+const Course = require("../model/Course");
 const mongoose = require("mongoose");
 
 export class CourseDao {

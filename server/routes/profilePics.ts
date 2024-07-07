@@ -2,7 +2,7 @@ export {}
 
 import { Request, Response } from 'express';
 
-const Profiles = require("../model/Profile.ts")
+const Profiles = require("../model/Profile")
 
 require('dotenv').config({ path: 'aws.env' }); // Load environment variables from aws.env file
 
