@@ -109,3 +109,8 @@ type view = {
 type lineGraphPoint = { label: string, value: number }
 
 type pieGraphPoint = { _id: string, count: number }
+
+export type { 
+  lineGraphPoint, pieGraphPoint, view, sisCourse, Review, report, Profile,
+  Post, CoursePost, Availability, AnalyticsData, ActivityPost
+}
