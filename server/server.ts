@@ -1,7 +1,7 @@
 // server/index.ts
 require('dotenv').config();
 const PORT = process.env.PORT;
-const App = require('./app.ts');
+const App = require('./app');
 App.dbConnection();
 const app = App.app;
 
