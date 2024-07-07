@@ -20,7 +20,7 @@ const PostExpanded : FC<props> = ({post, userId, closeFunc}) => {
   if (userId == post.userId) {
     sections = ["Description", "Reviews"];
   } else {
-    sections = ["Description", "Reviews", "Leave a Review"];
+    sections = ["Description", "Reviews", "Leave Review"];
   }
 
   const [activeSection, setActiveSection] = useState(sections[0]);
