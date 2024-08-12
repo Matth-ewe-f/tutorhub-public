@@ -28,6 +28,7 @@ const Page : FC = () => {
 	const [photoFile, setPhotoFile] = useState<File>(null);
   const [profileData, setProfileData] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [submittimg, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -121,6 +122,7 @@ const Page : FC = () => {
 				const formData = new FormData();
 				formData.append("profilePicture", photoFile);
 				const endpoint = `${BACKEND_URL}/profilePics/upload/${userId}`;
+				setSubmitting(true);
 				await axios.post(endpoint, formData);
 			}
 			router.replace('/profile');
@@ -226,7 +228,10 @@ const Page : FC = () => {
 						}
 					</div>
 				</div>
-				<Button className="mt-8" onClick={ checkAndSubmit }>Finish</Button>
+				<Button className="mt-8 w-24" onClick={ checkAndSubmit }
+				disabled={submittimg}>
+					{ submittimg ? "Loading..." : "Finish" }
+				</Button>
 			</div>
 		</div>
 	</>;
