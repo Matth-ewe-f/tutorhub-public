@@ -50,7 +50,6 @@ const Page: FC = () => {
 		performingArt: false,
 		visualArt: false,
 	});
-	const [availabilityFilter, setAvailabilityFilter] = useState(false);
 
 	const checkProfile = async () => {
 		const username = cookies.get("tutorhub-public-username");
@@ -88,12 +87,10 @@ const Page: FC = () => {
 
 	const filterPosts = async () => {
 		let filtered = posts;
-		// if (typeFilters.courses || typeFilters.activities) {
-			filtered = filtered.filter(post => {
-				return (typeFilters.courses && 'courseName' in post) ||
-					(typeFilters.activities && 'activityTitle' in post);
-			});
-		// }
+		filtered = filtered.filter(post => {
+			return (typeFilters.courses && 'courseName' in post) ||
+				(typeFilters.activities && 'activityTitle' in post);
+		});
 
 		if (priceFilters.highToLow && !priceFilters.lowToHigh) {
 			filtered = [...filtered.sort((a, b) => b.price - a.price)];
@@ -101,7 +98,7 @@ const Page: FC = () => {
 			filtered = [...filtered.sort((a, b) => a.price - b.price)];
 		}
 
-		if (!typeFilters.courses && (tagFilters.music || tagFilters.athletic || tagFilters.cooking || tagFilters.performingArt || tagFilters.visualArt)) {
+		if (typeFilters.activities && (tagFilters.music || tagFilters.athletic || tagFilters.cooking || tagFilters.performingArt || tagFilters.visualArt)) {
 			filtered = filtered.filter(post => {
 				return (tagFilters.music && 'activityTitle' in post && post.tags.includes('Music')) ||
 					(tagFilters.athletic && 'activityTitle' in post && post.tags.includes('Athletic')) ||
@@ -127,17 +124,6 @@ const Page: FC = () => {
 		setFilteredPosts(filtered);
 	};
 
-	const handleAvailabilityChange = async () => {
-		let response;
-		if (!availabilityFilter) {
-			response = await axios.get(`${api}/allPosts/getAllAvailable/${userId}`);
-		} else {
-			response = await axios.get(`${api}/allPosts`);
-		}
-		setPosts(response.data);
-		setAvailabilityFilter(!availabilityFilter);
-	}
-
 	const handleTypeChange = (filterCategory) => {
 		setTypeFilters(prev => {
 			const updatedFilters = {
@@ -148,13 +134,14 @@ const Page: FC = () => {
 		});
 	};
 
-	const handlePriceChange = (filterCategory) => {
+	const handlePriceChange = (filterCategory : string) => {
 		setPriceFilters(prev => {
-			const updatedFilters = {
-				...prev,
-				[filterCategory]: !prev[filterCategory],
-			};
-			return updatedFilters;
+			let updated = {
+				lowToHigh: false,
+				highToLow: false,
+			}
+			updated[filterCategory] = !prev[filterCategory];
+			return updated;
 		});
 	}
 
