@@ -117,10 +117,16 @@ const Page : FC = () => {
 
   return (
 		<div className="flex flex-col items-center mt-12 mx-auto max-w-2xl">
-			<h1 className="text-4xl font-bold text-center">Welcome to Tutorhub!</h1>
+			<h1 className="text-4xl font-bold text-center">
+				{"Welcome to "}
+				<a className="underline hover:text-slate-500"
+				href="https://github.com/Matth-ewe-f/tutorhub-public">
+					Tutorhub!
+				</a>
+			</h1>
 			<p className="text-lg font-light text-justify mt-6 mx-10">This is a demo of a tutor searching and matching application developed for the Johns Hopkins University's "Object Oriented Software Engineering" course. All data (user profiles, posts, etc.) exists purely for the purposes of the demo.</p>
-			<p className="text-lg font-light text-justify mt-2 mx-10">The user interface was primarily developed by <a href="http://matthewflynnmusic.com/" className="underline">Matthew Flynn</a>, using React, Tailwind, and shadcn/ui.</p>
-			<p className="text-lg font-light text-justify mt-2 mx-10">To get a quick feel for the site, you can log in as a guest, but you won't be able to see the pages for creating a profile or tutoring post. You can also create a user (with no personal information) to fully explore the site.</p>
+			<p className="text-lg font-light text-justify mt-2 mx-10">The user interface was primarily developed by <a href="https://github.com/Matth-ewe-f" className="underline hover:text-slate-500">Matthew Flynn</a>, using React, Tailwind, and shadcn/ui.</p>
+			<p className="text-lg font-light text-justify mt-2 mx-10">To get a quick feel for the site, you can log in as a guest, but you won't be able to see the pages for creating a profile or tutoring post. You can also create a username (requires no personal information) to fully explore the site.</p>
 			<div 
 				className="my-8 flex flex-wrap gap-y-4 gap-x-8 items-start justify-center
 				w-96 bg-white rounded-2xl p-6 shadow-md"
