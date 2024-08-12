@@ -56,8 +56,8 @@ const Page : FC = () => {
 		const current : number = (new Date()).getFullYear();
 		if (value > current + 6) {
 			value = current + 6;
-		} else if (value < current - 1) {
-			value = current - 1
+		} else if (value < current - 80) {
+			value = current - 80
 		}
 		setYear(value);
 	}
