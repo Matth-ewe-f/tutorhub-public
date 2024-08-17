@@ -10,8 +10,13 @@ node_modules
 # testing
 /coverage
 /server/coverage
+
 # production
 **/build
+**/dist
+.dockerignore
+Dockerfile
+fly.toml
 
 # misc
 .DS_Store
