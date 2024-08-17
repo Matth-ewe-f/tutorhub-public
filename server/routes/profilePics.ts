@@ -1,17 +1,14 @@
 export {}
 
-import { Request, Response } from 'express';
-
 const Profiles = require("../model/Profile")
 
 require('dotenv').config({ path: 'aws.env' }); // Load environment variables from aws.env file
 
 // Middleware for file uploads
-import { Multer } from 'multer';
 const multer = require('multer');
 
 // Initialize multer with desired configuration
-const upload: Multer = multer();
+const upload: any = multer();
 
 // Initialize instance of express
 const router = require('express').Router();
@@ -33,10 +30,10 @@ const client = new S3Client({
 
 
 // Update 'image.jpeg' with parameter name passed in
-router.post('/upload/:objectID', upload.single('profilePicture'), async (req: Request, res: Response) => {
+router.post('/upload/:objectID', upload.single('profilePicture'), async (req: any, res: any) => {
   try {
     const objectID = req.params.objectID;
-    const fileContent = (req.file as Express.Multer.File).buffer; // Cast req.file to the correct type
+    const fileContent = req.file.buffer; // Cast req.file to the correct type
     if (!fileContent) {
       return res.status(400).json({ error: 'File is required' });
     }
@@ -71,11 +68,11 @@ router.post('/upload/:objectID', upload.single('profilePicture'), async (req: Re
 });
 
 // PUT endpoint to update a profile picture
-router.put('/update/:objectID/:key', upload.single('profilePicture'), async (req: Request, res: Response) => {
+router.put('/update/:objectID/:key', upload.single('profilePicture'), async (req: any, res: any) => {
   try {
     const objectID = req.params.objectID;
     const key = req.params.key;
-    const fileContent = (req.file as Express.Multer.File).buffer; // Cast req.file to the correct type
+    const fileContent = req.file.buffer; // Cast req.file to the correct type
 
     if (!key || !fileContent) {
       return res.status(400).json({ error: 'Key and file content are required' });
@@ -98,7 +95,7 @@ router.put('/update/:objectID/:key', upload.single('profilePicture'), async (req
 });
 
 // GET endpoint to retrieve a profile picture
-router.get('/get/:key', async (req: Request, res: Response) => {
+router.get('/get/:key', async (req: any, res: any) => {
   try {
     const key = req.params.key;
 
@@ -134,7 +131,7 @@ router.get('/get/:key', async (req: Request, res: Response) => {
 });
 
 // DELETE endpoint to delete a profile picture
-router.delete('/delete/:objectID/:key', async (req: Request, res: Response) => {
+router.delete('/delete/:objectID/:key', async (req: any, res: any) => {
   try {
 
     const objectID = req.params.objectID;
