@@ -124,7 +124,7 @@ const Page : FC = () => {
 					Tutorhub!
 				</a>
 			</h1>
-			<p className="text-lg font-light text-justify mt-6 mx-10">This is a demo of a tutor searching and matching application developed for the Johns Hopkins University's "Object Oriented Software Engineering" course. All data (user profiles, posts, etc.) exists purely for the purposes of the demo, as the original version requires a JHU email addres.</p>
+			<p className="text-lg font-light text-justify mt-6 mx-10">This is a demo of a tutor searching and matching application developed for the Johns Hopkins University's "Object Oriented Software Engineering" course. All data (user profiles, posts, etc.) exists purely for the purposes of the demo, as the original version requires a JHU email address.</p>
 			<p className="text-lg font-light text-justify mt-2 mx-10">The user interface was primarily developed by <a href="https://github.com/Matth-ewe-f" className="underline hover:text-slate-500">Matthew Flynn</a>, using React, Tailwind, and shadcn/ui.</p>
 			<p className="text-lg font-light text-justify mt-2 mx-10">To get a quick feel for the site, you can log in as a guest, but you won't be able to see the pages for creating a profile or tutoring post. You can also create a username (requires no personal information) to fully explore the site.</p>
 			<div 
